@@ -1,4 +1,6 @@
 # computer-network-performance-project
+
+Using the Mininet APIs, build the following custom topology:
 ![](images/topology.png)
 
 You can set the link attributes (bandwidth, delay, queue size) individually for the different links of the topology. Set the bandwidth of the green links to twice the value of the blue ones.
