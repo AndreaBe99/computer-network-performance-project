@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# With step value - 3 ping
+for i in {56..184..64}
+#for i in {56..3}
+do
+   # -s: packet size, by default is 56 (64 if you include 8 bytes of ICMP header)
+   # -D: print timestamp before each line
+   # -w: set a hard timeout
+   h1 ping h2 -s $i -D -w 10 >> ping_ip.txt
+   
+   # Example with google
+   # ping google.com -s $i -D -w 10 >> ping_ip.txt
+   sleep 10s
+done

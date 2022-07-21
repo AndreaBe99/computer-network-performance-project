@@ -1,0 +1,41 @@
+#### COMMAND ####
+sudo mn - c
+sudo python3 miniedit.py
+
+
+## 
+sh ovs-ofctl add-flow s1 priority=550,in_port=1,action=output:3
+sh ovs-ofctl add-flow s1 priority=550,in_port=3,action=output:1
+
+sh ovs-ofctl add-flow s4 priority=550,in_port=4,action=output:2
+sh ovs-ofctl add-flow s4 priority=550,in_port=2,action=output:4
+
+sh ovs-ofctl add-flow s3 priority=550,in_port=1,action=output:2
+sh ovs-ofctl add-flow s3 priority=550,in_port=2,action=output:1
+
+
+ovs-vsctl set-controller s1 tcp:localhost:6633
+ovs-vsctl set-controller s2 tcp:localhost:6633
+ovs-vsctl set-controller s3 tcp:localhost:6633
+ovs-vsctl set-controller s4 tcp:localhost:6633
+ovs-vsctl set-controller s5 tcp:localhost:6633
+
+### NET TOPOLOGY
+mininet> net
+h1 h1-eth0:s1-eth1
+h2 h2-eth0:s2-eth1
+h3 h3-eth0:s3-eth2
+hm hm-eth0:s4-eth3
+s1 lo:  s1-eth1:h1-eth0 s1-eth2:s5-eth1 s1-eth3:s4-eth4
+s2 lo:  s2-eth1:h2-eth0 s2-eth2:s4-eth1
+s3 lo:  s3-eth1:s4-eth2 s3-eth2:h3-eth0 s3-eth3:s5-eth2
+s4 lo:  s4-eth1:s2-eth2 s4-eth2:s3-eth1 s4-eth3:hm-eth0 s4-eth4:s1-eth3
+s5 lo:  s5-eth1:s1-eth2 s5-eth2:s3-eth3
+
+
+
+### PING COMMAND
+
+# Change the Default Size of Ping
+ping -l (value between 0 to 65500) [Destination Address]
+

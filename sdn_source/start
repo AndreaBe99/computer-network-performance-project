@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ryu-manager gui_topology.py base_switch.py --observe-links

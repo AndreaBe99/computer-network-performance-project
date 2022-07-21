@@ -1,0 +1,214 @@
+{
+    "application": {
+        "dpctl": "",
+        "ipBase": "10.0.0.0/24",
+        "netflow": {
+            "nflowAddId": "0",
+            "nflowTarget": "",
+            "nflowTimeout": "600"
+        },
+        "openFlowVersions": {
+            "ovsOf10": "1",
+            "ovsOf11": "0",
+            "ovsOf12": "0",
+            "ovsOf13": "0"
+        },
+        "sflow": {
+            "sflowHeader": "128",
+            "sflowPolling": "30",
+            "sflowSampling": "400",
+            "sflowTarget": ""
+        },
+        "startCLI": "1",
+        "switchType": "ovs",
+        "terminalType": "xterm"
+    },
+    "controllers": [],
+    "hosts": [
+        {
+            "number": "1",
+            "opts": {
+                "hostname": "h1",
+                "nodeNum": 1,
+                "sched": "host"
+            },
+            "x": "94.0",
+            "y": "335.0"
+        },
+        {
+            "number": "2",
+            "opts": {
+                "hostname": "h2",
+                "nodeNum": 2,
+                "sched": "host"
+            },
+            "x": "84.0",
+            "y": "181.0"
+        },
+        {
+            "number": "3",
+            "opts": {
+                "hostname": "h3",
+                "nodeNum": 3,
+                "sched": "host"
+            },
+            "x": "663.0",
+            "y": "194.0"
+        },
+        {
+            "number": "4",
+            "opts": {
+                "hostname": "hm",
+                "nodeNum": 4,
+                "sched": "host"
+            },
+            "x": "384.0",
+            "y": "46.0"
+        }
+    ],
+    "links": [
+        {
+            "dest": "s2",
+            "opts": {},
+            "src": "h2"
+        },
+        {
+            "dest": "s4",
+            "opts": {
+                "bw": 10,
+                "delay": "20ms",
+                "max_queue_size": 4
+            },
+            "src": "s2"
+        },
+        {
+            "dest": "s3",
+            "opts": {
+                "bw": 10,
+                "delay": "20ms",
+                "max_queue_size": 4
+            },
+            "src": "s4"
+        },
+        {
+            "dest": "h3",
+            "opts": {},
+            "src": "s3"
+        },
+        {
+            "dest": "s4",
+            "opts": {},
+            "src": "hm"
+        },
+        {
+            "dest": "s1",
+            "opts": {},
+            "src": "h1"
+        },
+        {
+            "dest": "s5",
+            "opts": {
+                "bw": 5,
+                "delay": "20ms",
+                "max_queue_size": 4
+            },
+            "src": "s1"
+        },
+        {
+            "dest": "s4",
+            "opts": {
+                "bw": 10,
+                "delay": "20ms",
+                "max_queue_size": 4
+            },
+            "src": "s1"
+        },
+        {
+            "dest": "s3",
+            "opts": {
+                "bw": 5,
+                "delay": "20ms",
+                "max_queue_size": 4
+            },
+            "src": "s5"
+        }
+    ],
+    "switches": [
+        {
+            "number": "1",
+            "opts": {
+                "controllers": [],
+                "hostname": "s1",
+                "netflow": "0",
+                "nodeNum": 1,
+                "sflow": "0",
+                "startCommand": "ovs-vsctl set-controller s1 tcp:localhost:6633",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "237.0",
+            "y": "336.0"
+        },
+        {
+            "number": "2",
+            "opts": {
+                "controllers": [],
+                "hostname": "s2",
+                "netflow": "0",
+                "nodeNum": 2,
+                "sflow": "0",
+                "startCommand": "ovs-vsctl set-controller s2 tcp:localhost:6633",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "219.0",
+            "y": "181.0"
+        },
+        {
+            "number": "3",
+            "opts": {
+                "controllers": [],
+                "hostname": "s3",
+                "netflow": "0",
+                "nodeNum": 3,
+                "sflow": "0",
+                "startCommand": "ovs-vsctl set-controller s3 tcp:localhost:6633",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "535.0",
+            "y": "179.0"
+        },
+        {
+            "number": "4",
+            "opts": {
+                "controllers": [],
+                "hostname": "s4",
+                "netflow": "0",
+                "nodeNum": 4,
+                "sflow": "0",
+                "startCommand": "ovs-vsctl set-controller s4 tcp:localhost:6633",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "385.0",
+            "y": "154.0"
+        },
+        {
+            "number": "5",
+            "opts": {
+                "controllers": [],
+                "hostname": "s5",
+                "netflow": "0",
+                "nodeNum": 5,
+                "sflow": "0",
+                "startCommand": "ovs-vsctl set-controller s5 tcp:localhost:6633",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "407.0",
+            "y": "363.0"
+        }
+    ],
+    "version": "2"
+}
