@@ -1,6 +1,25 @@
 #### COMMAND ####
-sudo mn - c
+sudo /usr/share/openvswitch/scripts/ovs-ctl start   
+sudo mn -c
 sudo python3 miniedit.py
+
+cd ryu_examples 
+ryu-manager --observe-links base_switch.py gui_topology.py
+
+ovs-vsctl show
+
+
+#### PORT MAC ####
+h1      --> s1-eth1: fa:e6:b6:77:b8:b7
+s1-eth2 --> s4-eth2: 56:8e:0b:10:ff:d2 - 96:cf:cb:6b:c9:c5
+s4-eth3 --> s3-eth2: 5a:14:c1:41:d3:4b - 46:e1:ca:ca:9b:a4
+s3-eth3 --> h3:      b2:a7:22:bb:2f:60
+
+#### HOST MAC ####
+h1: 4e:3b:1a:3e:5b:df
+h2: 5a:81:e2:22:d5:12
+h3: aa:ee:90:3d:8e:6a
+hm: a2:3e:02:dd:92:0a
 
 
 ## 

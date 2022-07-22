@@ -11,25 +11,24 @@
 import sys
 from time import sleep
 
-
 def flow_reroute_app(app):
-    while True:
-
-
-        # An example on how to interact with the Ryu Application
-        print(app.dpids.keys())
-        sys.stdout.flush()
-
-        # Delete all the flows from the first datapath found in the dictionary:
-        #if len(app.dpids) > 0:
-        #    first_entry = list(app.dpids.keys())[0]
-        #    app.delete_flows(app.dpids[first_entry])
-
-        sleep(5)
-
-
-
+	while True:
+		# An example on how to interact with the Ryu Application
+		#print(app.dpids.keys())
+		sys.stdout.flush()
+		for keys in app.dpids:
+			print(app.dpids[keys], keys)
+			#datapath = app.dpids[keys]
+			node, out_port = app.dpids[keys]
+			print(node, out_port)
+		# (MAC, 1)
+		# app.inst_path_rule(path, priority)
+		# Delete all the flows from the first datapath found in the dictionary:
+		#if len(app.dpids) > 0:
+		#    first_entry = list(app.dpids.keys())[0]
+		#    app.delete_flows(app.dpids[first_entry])
+		sleep(5)
+		
 if __name__ == "__main__":
-
-    print("This script is not meant to be run directly.")
-    print("If you see this message, however, it means that your script has no syntax errors! :)")
+	print("This script is not meant to be run directly.")
+	print("If you see this message, however, it means that your script has no syntax errors! :)")

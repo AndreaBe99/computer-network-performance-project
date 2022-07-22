@@ -8,10 +8,10 @@
             "nflowTimeout": "600"
         },
         "openFlowVersions": {
-            "ovsOf10": "1",
+            "ovsOf10": "0",
             "ovsOf11": "0",
             "ovsOf12": "0",
-            "ovsOf13": "0"
+            "ovsOf13": "1"
         },
         "sflow": {
             "sflowHeader": "128",
@@ -32,8 +32,8 @@
                 "nodeNum": 1,
                 "sched": "host"
             },
-            "x": "94.0",
-            "y": "335.0"
+            "x": "180.0",
+            "y": "273.0"
         },
         {
             "number": "2",
@@ -42,18 +42,19 @@
                 "nodeNum": 2,
                 "sched": "host"
             },
-            "x": "84.0",
-            "y": "181.0"
+            "x": "181.0",
+            "y": "153.0"
         },
         {
             "number": "3",
             "opts": {
                 "hostname": "h3",
+                "ip": "10.0.0.3",
                 "nodeNum": 3,
                 "sched": "host"
             },
-            "x": "663.0",
-            "y": "194.0"
+            "x": "819.0",
+            "y": "152.0"
         },
         {
             "number": "4",
@@ -62,11 +63,16 @@
                 "nodeNum": 4,
                 "sched": "host"
             },
-            "x": "384.0",
-            "y": "46.0"
+            "x": "500.0",
+            "y": "41.0"
         }
     ],
     "links": [
+        {
+            "dest": "s1",
+            "opts": {},
+            "src": "h1"
+        },
         {
             "dest": "s2",
             "opts": {},
@@ -76,16 +82,43 @@
             "dest": "s4",
             "opts": {
                 "bw": 10,
-                "delay": "20ms",
+                "delay": "20",
                 "max_queue_size": 4
             },
             "src": "s2"
         },
         {
+            "dest": "s4",
+            "opts": {
+                "bw": 10,
+                "delay": "20",
+                "max_queue_size": 4
+            },
+            "src": "s1"
+        },
+        {
+            "dest": "s5",
+            "opts": {
+                "bw": 5,
+                "delay": "20",
+                "max_queue_size": 4
+            },
+            "src": "s1"
+        },
+        {
+            "dest": "s3",
+            "opts": {
+                "bw": 5,
+                "delay": "20",
+                "max_queue_size": 4
+            },
+            "src": "s5"
+        },
+        {
             "dest": "s3",
             "opts": {
                 "bw": 10,
-                "delay": "20ms",
+                "delay": "20",
                 "max_queue_size": 4
             },
             "src": "s4"
@@ -96,41 +129,9 @@
             "src": "s3"
         },
         {
-            "dest": "s4",
+            "dest": "hm",
             "opts": {},
-            "src": "hm"
-        },
-        {
-            "dest": "s1",
-            "opts": {},
-            "src": "h1"
-        },
-        {
-            "dest": "s5",
-            "opts": {
-                "bw": 5,
-                "delay": "20ms",
-                "max_queue_size": 4
-            },
-            "src": "s1"
-        },
-        {
-            "dest": "s4",
-            "opts": {
-                "bw": 10,
-                "delay": "20ms",
-                "max_queue_size": 4
-            },
-            "src": "s1"
-        },
-        {
-            "dest": "s3",
-            "opts": {
-                "bw": 5,
-                "delay": "20ms",
-                "max_queue_size": 4
-            },
-            "src": "s5"
+            "src": "s4"
         }
     ],
     "switches": [
@@ -146,8 +147,8 @@
                 "switchIP": "",
                 "switchType": "default"
             },
-            "x": "237.0",
-            "y": "336.0"
+            "x": "319.0",
+            "y": "274.0"
         },
         {
             "number": "2",
@@ -161,8 +162,8 @@
                 "switchIP": "",
                 "switchType": "default"
             },
-            "x": "219.0",
-            "y": "181.0"
+            "x": "318.0",
+            "y": "154.0"
         },
         {
             "number": "3",
@@ -176,8 +177,8 @@
                 "switchIP": "",
                 "switchType": "default"
             },
-            "x": "535.0",
-            "y": "179.0"
+            "x": "648.0",
+            "y": "153.0"
         },
         {
             "number": "4",
@@ -191,8 +192,8 @@
                 "switchIP": "",
                 "switchType": "default"
             },
-            "x": "385.0",
-            "y": "154.0"
+            "x": "501.0",
+            "y": "157.0"
         },
         {
             "number": "5",
@@ -206,8 +207,8 @@
                 "switchIP": "",
                 "switchType": "default"
             },
-            "x": "407.0",
-            "y": "363.0"
+            "x": "521.0",
+            "y": "341.0"
         }
     ],
     "version": "2"

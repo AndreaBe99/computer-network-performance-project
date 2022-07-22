@@ -1095,7 +1095,7 @@ class MiniEdit( Frame ):
 
     def __init__( self, parent=None, cheight=600, cwidth=1000 ):
 
-        self.defaultIpBase='10.0.0.0/8'
+        self.defaultIpBase='10.0.0.0/24'
 
         self.nflowDefaults = {'nflowTarget':'',
                               'nflowTimeout':'600',
@@ -1449,7 +1449,10 @@ class MiniEdit( Frame ):
 
         # Load application preferences
         if 'application' in loadedTopology:
+            # self.appPrefs = dict(self.appPrefs.items() + loadedTopology['application'].items())
+            # FIX 
             self.appPrefs.update(loadedTopology['application'])
+            
             if "ovsOf10" not in self.appPrefs["openFlowVersions"]:
                 self.appPrefs["openFlowVersions"]["ovsOf10"] = '0'
             if "ovsOf11" not in self.appPrefs["openFlowVersions"]:
@@ -1607,7 +1610,7 @@ class MiniEdit( Frame ):
 
     def newTopology( self ):
         "New command."
-        for widget in tuple( self.widgetToItem ):
+        for widget in self.widgetToItem:
             self.deleteItem( self.widgetToItem[ widget ] )
         self.hostCount = 0
         self.switchCount = 0
