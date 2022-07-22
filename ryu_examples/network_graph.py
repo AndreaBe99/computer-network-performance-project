@@ -79,8 +79,8 @@ class NetworkGraph:
         paths = nx.all_shortest_paths(self.graph, src, dst)
 
         paths_res = []
-        for path in paths:
 
+        for path in paths:
             path_temp = [src]
             for n in range(1, len(path)-1):
                 n1 = path[n]

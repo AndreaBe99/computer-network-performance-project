@@ -10,6 +10,12 @@ ovs-vsctl show
 
 
 #### PORT MAC ####
+#  host : port --> port : host
+h1 : ? --> 1 : s1
+s1 : 2 --> 2 : s4
+s4 : 3 --> 2 : s3
+s3 : 3 --> ? : h3
+
 h1      --> s1-eth1: fa:e6:b6:77:b8:b7
 s1-eth2 --> s4-eth2: 56:8e:0b:10:ff:d2 - 96:cf:cb:6b:c9:c5
 s4-eth3 --> s3-eth2: 5a:14:c1:41:d3:4b - 46:e1:ca:ca:9b:a4

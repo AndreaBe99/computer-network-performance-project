@@ -154,11 +154,10 @@ class BaseSwitch(app_manager.RyuApp):
             return
 
         path = paths[0]
-
         # And we install the rule here.
         # Uncomment this line if you want the rule to be installed directly when a PACKET_IN is received.
         # Otherwise, find your ideal solution by working on the FlowRouteApp code.
-        self.inst_path_rule(path)
+        self.inst_path_rule(path, 1)
 
         data = None
         if msg.buffer_id == ofproto.OFP_NO_BUFFER:
@@ -184,7 +183,7 @@ class BaseSwitch(app_manager.RyuApp):
 
     # Function used to install, in one single action, all the flow rules on all the datapaths on a path, in order for
     # packets to travel through that path
-    def inst_path_rule(self, path):
+    def inst_path_rule(self, path, priority):
 
         for n in range(1, len(path) - 1):
             node, out_port = path[n]
@@ -194,7 +193,7 @@ class BaseSwitch(app_manager.RyuApp):
             match = parser.OFPMatch(eth_dst=path[-1], eth_src=path[0])
             actions = [parser.OFPActionOutput(out_port)]
 
-            self.add_flow(datapath, 1, match, actions)
+            self.add_flow(datapath, priority, match, actions)
 
     # Function used to delete all the rules associated with a given path.
     def del_path_rule(self, path):

@@ -10,10 +10,26 @@
 
 import sys
 from time import sleep
+from turtle import home
 from network_graph import NetworkGraph
 
 SWITCH_NUMBER = 5
 HOST_NUMBER = 4
+
+
+"""
+	#### PORT MAC ####
+	# If the port all always the same
+	#  host : port --> port : host
+	h1 : ? --> 1 : s1
+	s1 : 2 --> 2 : s4
+	s4 : 3 --> 2 : s3
+	s3 : 3 --> ? : h3
+"""
+# (switch_number, exit_port)
+S1_PORT = (1, 2)
+S3_PORT = (3, 3)
+S4_PORT = (4, 3)
 
 def flow_reroute_app(app):
 	hosts = {}
@@ -31,15 +47,58 @@ def flow_reroute_app(app):
 		
 		if len(network.hosts) == HOST_NUMBER:
 			hosts = network.hosts
-			print(hosts)
+			print("HOST: ", hosts)
+
 		if len(network.switches) == SWITCH_NUMBER:
 			switches = network.switches
-			print(switches)
+			print("SWITCH: ", switches)
 		
-		
+		if network.hosts and network.switches:
+			# We need h1 and h3 MAC
+			h1, h3 = None, None
+			for host in hosts:
+				port_name = host["port"]["name"]
+				# Check if is s1 switch, because h1 is connected with s1
+				if "s1" in port_name:
+					h1 = host
+				# Check if is s3 switch, because h3 is connected with s3
+				if "s3" in port_name:
+					h3 = host
+				# We can do the same checking dpid equal to 1 or 3
+			
+			# We need s1, s4 and s3 MAC
+			# For now is not necessary
+			"""
+			s1, s3, s4 = None, None, None
+			for switch in switches:
+				dpid = int(switch["dpid"])
+				
+				if dpid == 1:
+					s1 = switch
+				if dpid == 3:
+					s3 = switch
+				if dpid == 4:
+					s3 = switch
+			"""
+			src_mac = h1["mac"]
+			dst_mac = h3["mac"]
+			"""
+				#### Path structure ####
+				[src_mac, (switch, exit_port), (switch, exit_port), ..., dst_mac]
+			"""
+			path = []
+			path.append(src_mac)
+			path.append(S1_PORT)
+			path.append(S4_PORT)
+			path.append(S3_PORT)
+			path.append(dst_mac)
+
+			# Add rule with priority equal to 2
+			app.inst_path_rule(path, 2)
+			
+
+	
 		sys.stdout.flush()
-		# (MAC, 1)
-		# app.inst_path_rule(path, priority)
 		# Delete all the flows from the first datapath found in the dictionary:
 		#if len(app.dpids) > 0:
 		#    first_entry = list(app.dpids.keys())[0]
