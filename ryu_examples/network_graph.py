@@ -67,6 +67,14 @@ class NetworkGraph:
                 return n_mac
 
         return False
+    
+    # Function created for DDos Attack
+    def get_host_by_mac(self, mac):
+        nodes = self.graph.nodes(data=True)
+        for node in nodes:
+            if node["mac"] == mac:
+                return node
+        return False
 
     def get_all_paths_with_ports(self, src, dst):
     
