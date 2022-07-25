@@ -24,18 +24,21 @@ HOST_NUMBER = 4
 	s4 : 3 --> 2 : s3
 	s3 : 3 --> ? : h3
 """
+
+#### h1 --> h3 ####
+S1_PORT_H1_TO_H3 = (1, 2)
+S3_PORT_H1_TO_H3 = (3, 3)
+S4_PORT_H1_TO_H3 = (4, 3)
+
+#### h3 --> h1 ####
+S1_PORT_H3_TO_H1 = (1, 1)
+S3_PORT_H3_TO_H1 = (3, 2)
+S4_PORT_H3_TO_H1 = (4, 2)
+
 # (switch_number, exit_port)
-S1_PORT = (1, 2)
-S3_PORT = (3, 3)
-S4_PORT = (4, 3)
 
 def flow_reroute_app(app):
-	hosts = {}
-	switches = {}
-
 	while True:
-		# An example on how to interact with the Ryu Application
-		#print(app.dpids.keys())
 		while True:
 			try:
 				network = NetworkGraph()
@@ -59,25 +62,23 @@ def flow_reroute_app(app):
 					h3 = host
 				# We can do the same checking dpid equal to 1 or 3, instead of 'port_name'
 		
+		# If host 1 and host are up, we get their MAC Address and we set the paths
 		if h1 and h3:
+			#### h1 --> h3 ####
 			src_mac = h1["mac"]
 			dst_mac = h3["mac"]
-
-			path = [src_mac, S1_PORT, S4_PORT, S3_PORT, dst_mac]
-
+			path = [src_mac, S1_PORT_H1_TO_H3, S4_PORT_H1_TO_H3, S3_PORT_H1_TO_H3, dst_mac]
 			# Add rule with priority equal to 2
 			app.inst_path_rule(path, 2)
 			
-			# print("##################################")
-			# print("ADD path: ", path)
-			# print("##################################")
-
+			#### h3 --> h1 ####
+			src_mac = h3["mac"]
+			dst_mac = h1["mac"]
+			path = [src_mac, S1_PORT_H3_TO_H1, S4_PORT_H3_TO_H1, S3_PORT_H3_TO_H1, dst_mac]
+			# Add rule with priority equal to 2
+			app.inst_path_rule(path, 2)
 	
 		sys.stdout.flush()
-		# Delete all the flows from the first datapath found in the dictionary:
-		#if len(app.dpids) > 0:
-		#    first_entry = list(app.dpids.keys())[0]
-		#    app.delete_flows(app.dpids[first_entry])
 		sleep(5)
 		
 if __name__ == "__main__":
