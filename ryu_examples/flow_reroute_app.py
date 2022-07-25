@@ -13,7 +13,6 @@ from time import sleep
 from turtle import home
 from network_graph import NetworkGraph
 
-SWITCH_NUMBER = 5
 HOST_NUMBER = 4
 
 """
@@ -44,61 +43,34 @@ def flow_reroute_app(app):
 			except:
 				pass
 		
+		h1, h3 = None, None
+		# Check if all the hosts are connected 
 		if len(network.hosts) == HOST_NUMBER:
 			hosts = network.hosts
-			print("HOST: ", hosts)
-
-		if len(network.switches) == SWITCH_NUMBER:
-			switches = network.switches
-			print("SWITCH: ", switches)
-		
-		if network.hosts and network.switches:
-			# We need h1 and h3 MAC
-			h1, h3 = None, None
 			for host in hosts:
 				port_name = host["port"]["name"]
-				# Check if is s1 switch, because h1 is connected with s1
-				if "s1" in port_name:
+				# Check if it is connected to s1 switch, because h1 is connected with s1
+				# Check if IP is assigned
+				if "s1" in port_name and host["ipv4"] != []:
 					h1 = host
-				# Check if is s3 switch, because h3 is connected with s3
-				if "s3" in port_name:
+				# Check if it is connected to s3 switch, because h3 is connected with s3
+				# Check if IP is assigned
+				if "s3" in port_name and host["ipv4"] != []:
 					h3 = host
-				# We can do the same checking dpid equal to 1 or 3
-			
-			# We need s1, s4 and s3 MAC
-			# For now is not necessary
-			"""
-			s1, s3, s4 = None, None, None
-			for switch in switches:
-				dpid = int(switch["dpid"])
-				
-				if dpid == 1:
-					s1 = switch
-				if dpid == 3:
-					s3 = switch
-				if dpid == 4:
-					s3 = switch
-			"""
+				# We can do the same checking dpid equal to 1 or 3, instead of 'port_name'
+		
+		if h1 and h3:
 			src_mac = h1["mac"]
 			dst_mac = h3["mac"]
-			"""
-				#### Path structure ####
-				[src_mac, (switch, exit_port), (switch, exit_port), ..., dst_mac]
-			"""
-			path = []
-			path.append(src_mac)
-			path.append(S1_PORT)
-			path.append(S4_PORT)
-			path.append(S3_PORT)
-			path.append(dst_mac)
 
+			path = [src_mac, S1_PORT, S4_PORT, S3_PORT, dst_mac]
 
 			# Add rule with priority equal to 2
 			app.inst_path_rule(path, 2)
 			
-			print("##################################")
-			print("ADD: ", path)
-			print("##################################")
+			# print("##################################")
+			# print("ADD path: ", path)
+			# print("##################################")
 
 	
 		sys.stdout.flush()
