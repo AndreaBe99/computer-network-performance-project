@@ -16,7 +16,6 @@ from network_graph import NetworkGraph
 SWITCH_NUMBER = 5
 HOST_NUMBER = 4
 
-
 """
 	#### PORT MAC ####
 	# If the port all always the same
@@ -93,9 +92,13 @@ def flow_reroute_app(app):
 			path.append(S3_PORT)
 			path.append(dst_mac)
 
+
 			# Add rule with priority equal to 2
 			app.inst_path_rule(path, 2)
 			
+			print("##################################")
+			print("ADD: ", path)
+			print("##################################")
 
 	
 		sys.stdout.flush()

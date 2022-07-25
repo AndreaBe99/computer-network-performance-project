@@ -8,6 +8,9 @@ ryu-manager --observe-links base_switch.py gui_topology.py
 
 ovs-vsctl show
 
+sh ovs-ofctl dump-flows s1 --protocols=OpenFlow13
+
+
 
 #### PORT MAC ####
 #  host : port --> port : host
