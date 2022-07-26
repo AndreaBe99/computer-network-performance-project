@@ -47,19 +47,6 @@ class Topology(Topo):
         self.addLink(s3, s5, bw=5, delay='5ms', max_queue_size=10)
         self.addLink(s1, s5, bw=5, delay='5ms', max_queue_size=10)
 
-        info("*** Starting network\n")
-        self.build()
-
-        info("*** Testing network\n")
-        self.pingAll()
-        self.pingAll()
-
-        info("*** Running CLI\n")
-        CLI(self)
-
-        info("*** Stopping network\n" )
-        self.stop()
-
     def clean_net(self):
         """Clean mininet to allow to create new topology"""
         info('*** Clean net\n')
@@ -90,6 +77,10 @@ def run_topology():
 
     # Drop the user in to a CLI so user can run commands.
     CLI(net)
+
+    info("*** Testing network\n")
+    net.pingAll()
+    net.pingAll()
 
     # After the user exits the CLI, shutdown the network.
     net.stop()
