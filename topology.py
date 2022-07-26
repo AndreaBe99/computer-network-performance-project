@@ -74,13 +74,13 @@ def run_topology():
     for switch in switch_list:
         net.get(switch).start([])
         net.get(switch).cmd("ovs-vsctl set-controller {} tcp:6633".format(switch))
-
-    # Drop the user in to a CLI so user can run commands.
-    CLI(net)
-
+    
     info("*** Testing network\n")
     net.pingAll()
     net.pingAll()
+
+    # Drop the user in to a CLI so user can run commands.
+    CLI(net)
 
     # After the user exits the CLI, shutdown the network.
     net.stop()
