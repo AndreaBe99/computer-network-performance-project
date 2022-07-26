@@ -9,7 +9,7 @@ from subprocess import Popen
 def set_topology():
     "Create a network from semi-scratch with multiple controllers."
 
-    clean_net()
+    # clean_net()
 
     net = Mininet(controller=Controller, switch=OVSSwitch, waitConnected=True)
 
@@ -24,7 +24,7 @@ def set_topology():
     s5 = net.addSwitch('s5', protocols='OpenFlow13')
     switch_list = [s1, s2, s3, s4, s5]
     for i, switch in enumerate(switch_list):
-        switch.cmd(f'ovs-vsctl set-controller s{i+1} tcp: localhost: 6633')
+        switch.cmd(f'ovs-vsctl set-controller s{(i+1)} tcp: localhost: 6633')
 
     info("*** Creating hosts\n")
     h1 = net.addHost('h1')
