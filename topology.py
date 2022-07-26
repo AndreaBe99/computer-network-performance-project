@@ -6,67 +6,68 @@ from mininet.node import OVSSwitch, RemoteController
 from mininet.log import setLogLevel, info
 from subprocess import Popen
 
-def set_topology():
-    "Create a network from semi-scratch with multiple controllers."
 
-    # clean_net()
+class Topology(Topo):
+    def __init__(self):
+        """ init topology """
+        Topo.__init__(self)
+        "Create a network from semi-scratch with multiple controllers."
 
-    net = Mininet(controller=Controller, switch=OVSSwitch, waitConnected=True)
+        # clean_net()
+        info("*** Creating (reference) controllers\n")
+        #c1 = self.addController('c1', port=6633)
 
-    info("*** Creating (reference) controllers\n")
-    #c1 = net.addController('c1', port=6633)
+        info("*** Creating switches\n")
+        s1 = self.addSwitch('s1', protocols='OpenFlow13')
+        s2 = self.addSwitch('s2', protocols='OpenFlow13')
+        s3 = self.addSwitch('s3', protocols='OpenFlow13')
+        s4 = self.addSwitch('s4', protocols='OpenFlow13')
+        s5 = self.addSwitch('s5', protocols='OpenFlow13')
+        switch_list = [s1, s2, s3, s4, s5]
+        for i, switch in enumerate(switch_list):
+            switch.cmd(f'ovs-vsctl set-controller s{(i+1)} tcp: localhost: 6633')
 
-    info("*** Creating switches\n")
-    s1 = net.addSwitch('s1', protocols='OpenFlow13')
-    s2 = net.addSwitch('s2', protocols='OpenFlow13')
-    s3 = net.addSwitch('s3', protocols='OpenFlow13')
-    s4 = net.addSwitch('s4', protocols='OpenFlow13')
-    s5 = net.addSwitch('s5', protocols='OpenFlow13')
-    switch_list = [s1, s2, s3, s4, s5]
-    for i, switch in enumerate(switch_list):
-        switch.cmd(f'ovs-vsctl set-controller s{(i+1)} tcp: localhost: 6633')
+        info("*** Creating hosts\n")
+        h1 = self.addHost('h1')
+        h2 = self.addHost('h2')
+        h3 = self.addHost('h3')
+        hm = self.addHost('hm')
 
-    info("*** Creating hosts\n")
-    h1 = net.addHost('h1')
-    h2 = net.addHost('h2')
-    h3 = net.addHost('h3')
-    hm = net.addHost('hm')
+        info("*** Creating links\n")
+        self.addLink(h1, s1)
+        self.addLink(h2, s2)
+        self.addLink(h3, s3)
+        self.addLink(hm, s4)
 
-    info("*** Creating links\n")
-    net.addLink(h1, s1)
-    net.addLink(h2, s2)
-    net.addLink(h3, s3)
-    net.addLink(hm, s4)
+        # Green Link
+        # Set Bandwidth to 10Mbps, Delay to 5ms, Max Queue Size to 10
+        self.addLink(s1, s4, bw=10, delay='5ms', max_queue_size=10)
+        self.addLink(s2, s4, bw=10, delay='5ms', max_queue_size=10)
+        self.addLink(s3, s4, bw=10, delay='5ms', max_queue_size=10)
 
-    # Green Link
-    # Set Bandwidth to 10Mbps, Delay to 5ms, Max Queue Size to 10
-    net.addLink(s1, s4, bw=10, delay='5ms', max_queue_size=10)
-    net.addLink(s2, s4, bw=10, delay='5ms', max_queue_size=10)
-    net.addLink(s3, s4, bw=10, delay='5ms', max_queue_size=10)
+        # Blue Link
+        # Set Bandwidth to 5Mbps, Delay to 5ms, Max Queue Size to 10
+        self.addLink(s3, s5, bw=5, delay='5ms', max_queue_size=10)
+        self.addLink(s1, s5, bw=5, delay='5ms', max_queue_size=10)
 
-    # Blue Link
-    # Set Bandwidth to 5Mbps, Delay to 5ms, Max Queue Size to 10
-    net.addLink(s3, s5, bw=5, delay='5ms', max_queue_size=10)
-    net.addLink(s1, s5, bw=5, delay='5ms', max_queue_size=10)
+        info("*** Starting network\n")
+        self.build()
 
-    info("*** Starting network\n")
-    net.build()
+        info("*** Testing network\n")
+        self.pingAll()
+        self.pingAll()
 
-    info("*** Testing network\n")
-    net.pingAll()
-    net.pingAll()
+        info("*** Running CLI\n")
+        CLI(self)
 
-    info("*** Running CLI\n")
-    CLI(net)
+        info("*** Stopping network\n" )
+        self.stop()
 
-    info("*** Stopping network\n" )
-    net.stop()
-
-def clean_net():
-    """Clean mininet to allow to create new topology"""
-    info('*** Clean net\n')
-    cmd = "mn -c"
-    Popen(cmd, shell=True).wait()
+    def clean_net(self):
+        """Clean mininet to allow to create new topology"""
+        info('*** Clean net\n')
+        cmd = "mn -c"
+        Popen(cmd, shell=True).wait()
 
 if __name__ == '__main__':
     """
@@ -74,4 +75,4 @@ if __name__ == '__main__':
     From Console: sudo python3 topology.py
     """
     setLogLevel('info')  # for CLI output
-    set_topology()
+    topos = {'topo': (lambda: Topology())}
