@@ -23,9 +23,10 @@ class Topology(Topo):
         s3 = self.addSwitch('s3', protocols='OpenFlow13')
         s4 = self.addSwitch('s4', protocols='OpenFlow13')
         s5 = self.addSwitch('s5', protocols='OpenFlow13')
-        switch_list = [s1, s2, s3, s4, s5]
-        for i, switch in enumerate(switch_list):
-            switch.cmd(f'ovs-vsctl set-controller s{(i+1)} tcp: localhost: 6633')
+
+        for i in range(1,6):
+            s = self.__getitem__("s"+str(i))
+            s.sendCmd(f'ovs-vsctl set-controller s{i} tcp: localhost: 6633')
 
         info("*** Creating hosts\n")
         h1 = self.addHost('h1')
@@ -69,12 +70,41 @@ class Topology(Topo):
         cmd = "mn -c"
         Popen(cmd, shell=True).wait()
 
-"""
-Use this script to set the topology.
-From Console: sudo python3 topology.py
-"""
-setLogLevel('info')  # for CLI output
-topos = {'topo': (lambda: Topology())}
-# if __name__ == '__main__':
 
-    
+def run_topology():
+    "Bootstrap a Mininet network using the Topology"
+
+    # Create an instance of our topology
+    topo = Topology()
+
+    # Create a network based on the topology using OVS and controlled by
+    # a remote controller.
+    net = Mininet(
+        topo=topo,
+        controller=lambda name: RemoteController(name, ip='127.0.0.1'),
+        switch=OVSSwitch,
+        autoSetMacs=True)
+
+    # Actually start the network
+    net.start()
+
+    # Drop the user in to a CLI so user can run commands.
+    CLI(net)
+
+    # After the user exits the CLI, shutdown the network.
+    net.stop()
+
+
+if __name__ == '__main__':
+    """
+    This runs if this file is executed directly:
+        sudo python3 topology.py
+    """
+    setLogLevel('info')
+    run_topology()
+
+"""
+Allows the file to be imported using:
+    mn --custom topology.py --topo mytopo
+"""
+topos = {'mytopo': (lambda: Topology())}
