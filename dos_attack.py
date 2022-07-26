@@ -33,7 +33,7 @@ if __name__ == "__main__":
         thread.start()
 
         # Increase time for each ping
-        sleep(i/1000)
+        sleep(1/i)
     
     for t in THREADS:
         t.join()
