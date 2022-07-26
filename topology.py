@@ -24,10 +24,6 @@ class Topology(Topo):
         s4 = self.addSwitch('s4', protocols='OpenFlow13')
         s5 = self.addSwitch('s5', protocols='OpenFlow13')
 
-        for i in range(1,6):
-            s = self.switches()[i-1]
-            s.sendCmd(f'ovs-vsctl set-controller s{i} tcp: localhost: 6633')
-
         info("*** Creating hosts\n")
         h1 = self.addHost('h1')
         h2 = self.addHost('h2')
@@ -87,6 +83,10 @@ def run_topology():
 
     # Actually start the network
     net.start()
+    switch_list = ["s1", "s2", "s3", "s4", "s5"]
+    for switch in switch_list:
+        net.get(switch).start([])
+        net.get(switch).cmd("ovs-vsctl set-controller {} tcp:6633".format(switch))
 
     # Drop the user in to a CLI so user can run commands.
     CLI(net)
