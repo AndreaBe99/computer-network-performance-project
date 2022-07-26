@@ -4,14 +4,17 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.node import OVSSwitch, RemoteController
 from mininet.log import setLogLevel, info
+from subprocess import Popen
 
 def set_topology():
     "Create a network from semi-scratch with multiple controllers."
 
+    clean_net()
+
     net = Mininet(controller=Controller, switch=OVSSwitch, waitConnected=True)
 
     info("*** Creating (reference) controllers\n")
-    c1 = net.addController('c1', port=6633)
+    #c1 = net.addController('c1', port=6633)
 
     info("*** Creating switches\n")
     s1 = net.addSwitch('s1', protocols='OpenFlow13')
@@ -20,6 +23,8 @@ def set_topology():
     s4 = net.addSwitch('s4', protocols='OpenFlow13')
     s5 = net.addSwitch('s5', protocols='OpenFlow13')
     switch_list = [s1, s2, s3, s4, s5]
+    for i, switch in enumerate(switch_list):
+        switch.cmd(f'ovs-vsctl set-controller s{i} tcp: localhost: 6633')
 
     info("*** Creating hosts\n")
     h1 = net.addHost('h1')
@@ -46,10 +51,9 @@ def set_topology():
 
     info("*** Starting network\n")
     net.build()
-    c1.start()
-    s1.start([c1])
 
     info("*** Testing network\n")
+    net.pingAll()
     net.pingAll()
 
     info("*** Running CLI\n")
@@ -57,6 +61,12 @@ def set_topology():
 
     info("*** Stopping network\n" )
     net.stop()
+
+def clean_net():
+    """Clean mininet to allow to create new topology"""
+    info('*** Clean net\n')
+    cmd = "mn -c"
+    Popen(cmd, shell=True).wait()
 
 if __name__ == '__main__':
     """
