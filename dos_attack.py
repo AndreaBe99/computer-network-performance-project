@@ -23,7 +23,7 @@ THREADS = []
 def ping_host(i):
     # Increase size for each ping
     for size in range(100, 65000, 100):
-        subprocess.run(["ping", "-c", "1", "-s", str(size), IP_H2], stdout=subprocess.PIPE, encoding="utf-8")
+        subprocess.run(["ping", "-s", str(size), IP_H2])
 
 
 if __name__ == "__main__":
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         THREADS.append(thread)
         thread.start()
 
-        # Increase time for each ping
+        # Increase frequency for each ping
         sleep(1/i)
     
     for t in THREADS:

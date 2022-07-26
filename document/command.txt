@@ -8,8 +8,11 @@ ryu-manager --observe-links base_switch.py gui_topology.py
 
 ovs-vsctl show
 
+# Show Flow rule
 sh ovs-ofctl dump-flows s1 --protocols=OpenFlow13
 
+# Open new terminal 
+/usr/bin/dbus-launch /usr/bin/gnome-terminal &
 
 
 #### PORT MAC ####

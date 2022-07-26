@@ -18,6 +18,7 @@ def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", "15000", IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     with open(FILE_NAME, "a+") as file:
+        file.write(time.strftime("%H:%M:%S", time.time()))
         file.write(output.stdout)
         file.write("\n")
 
