@@ -69,10 +69,12 @@ class Topology(Topo):
         cmd = "mn -c"
         Popen(cmd, shell=True).wait()
 
-if __name__ == '__main__':
-    """
-    Use this script to set the topology.
-    From Console: sudo python3 topology.py
-    """
-    setLogLevel('info')  # for CLI output
-    topos = {'topo': (lambda: Topology())}
+"""
+Use this script to set the topology.
+From Console: sudo python3 topology.py
+"""
+setLogLevel('info')  # for CLI output
+topos = {'topo': (lambda: Topology())}
+# if __name__ == '__main__':
+
+    
