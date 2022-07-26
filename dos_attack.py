@@ -8,7 +8,9 @@ from unicodedata import name
 import os 
 
 """
-    Perform a Dos Attack from hm to h2
+    Perform a Dos Attack from hm to h2.
+    To simulate a Dos Attack hm would have to send flows with increasing size and/or frequency, 
+    until a certain value is reached wich involves the drop of some of the flows passing by for s4.
 """
 
 # first we get the current timestamp
