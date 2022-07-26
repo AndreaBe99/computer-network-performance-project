@@ -46,22 +46,27 @@ def flow_reroute_app(app):
 			except:
 				pass
 		
-		h1, h3 = None, None
+		h1, h2, h3, hm = None, None, None, None
 		# Check if all the hosts are connected 
 		if len(network.hosts) == HOST_NUMBER:
 			hosts = network.hosts
 			for host in hosts:
 				port_name = host["port"]["name"]
 				# Check if it is connected to s1 switch, because h1 is connected with s1
+				# We can do the same checking dpid equal to 1 or 3, instead of 'port_name'
 				# Check if IP is assigned
 				if "s1" in port_name and host["ipv4"] != []:
 					h1 = host
-				# Check if it is connected to s3 switch, because h3 is connected with s3
-				# Check if IP is assigned
 				if "s3" in port_name and host["ipv4"] != []:
 					h3 = host
-				# We can do the same checking dpid equal to 1 or 3, instead of 'port_name'
+
+				# For Dos Attack
+				if "s4" in port_name and host["ipv4"] != []:
+					hm = host
+				if "s2" in port_name and host["ipv4"] != []:
+					h2 = host
 		
+		#### Flow Rule Plot 1 ####
 		# If host 1 and host are up, we get their MAC Address and we set the paths
 		if h1 and h3:
 			#### h1 --> h3 ####
@@ -77,9 +82,33 @@ def flow_reroute_app(app):
 			path = [src_mac, S1_PORT_H3_TO_H1, S4_PORT_H3_TO_H1, S3_PORT_H3_TO_H1, dst_mac]
 			# Add rule with priority equal to 2
 			app.inst_path_rule(path, 2)
-	
+		
+		#### Flow Rule Dos Attack ####
+		# Uncomment the following two line to obtain a delay
+		# if hm and h2:
+		#	dos_attack(app, hm, h2)
+
 		sys.stdout.flush()
 		sleep(5)
+
+def dos_attack(app, hm, h2):
+	###### DDos Attack ######
+
+	# Default Path: hm --> h2 
+	path = [hm["mac"], (4,1), (2,1), h2["mac"]]
+
+	# We use the priority field in the flow rules to generate multiple 
+	# rules for the same pair of communicating hosts.
+
+	# Set 10 flow rules with different priority to get a delay.
+	for i in range(1, 10):
+		app.inst_path_rule(path, i)
+
+	# To simulate a Dos Attack hm would have to send flows
+	# with increasing size and/or frequency, until a certain 
+	# value is reached wich involves the drop of some of the flows passing by for s4.
+
+	# To do this we use another python script to execute ping from hm
 		
 if __name__ == "__main__":
 	print("This script is not meant to be run directly.")

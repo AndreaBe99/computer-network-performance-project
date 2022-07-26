@@ -155,50 +155,6 @@ class BaseSwitch(app_manager.RyuApp):
 
         path = paths[0]
         
-        ###### DDos Attack ######
-        # We use the priority field in the flow rules to generate multiple 
-        # rules for the same pair of communicating hosts.
-        
-        # Comment the following line to activate DDos Attack
-        """
-        
-        # We need to check if the src is hm and dst is h2, 
-        # to do this we need a new function in NetwotkGraph wich return a node object by its MAC.
-        src_host = network.get_host_by_mac(src_mac)
-        dst_host = network.get_host_by_mac(dst_mac)
-
-        if not src_host and not dst_host:
-            #### hm --> h2 ####
-            if int(src_host["port"]["dpid"]) == 4 and int(dst_host["port"]["dpid"]) == 2:
-                # After above check we will generate different rule with the same priority. 
-                '''
-                    We use the assumption that the ports are always the same
-                    Normal Path: (4,1), (2,1)
-                    Path 1: (4,3), (3,1), (5,1), (1,2), (4,1), (2,1)
-                    Path 2: (4,2), (1,3), (5,2), (3,2), (4,1), (2,1)
-                '''
-                new_path_1 = [src_mac, (4,3), (3,1), (5,1), (1,2), (4,1), (2,1), dst_mac]
-                self.inst_path_rule(new_path_1, 1)
-                new_path_2 = [src_mac, (4,2), (1,3), (5,2), (3,2), (4,1), (2,1), dst_mac]
-                self.inst_path_rule(new_path_2, 1)
-            
-            #### h2 --> hm ####
-            if int(src_host["port"]["dpid"]) == 2 and int(dst_host["port"]["dpid"]) == 4:
-                # After above check we will generate different rule with the same priority. 
-                '''
-                    We use the assumption that the ports are always the same
-                    Normal Path: (2,2), (4,4)
-                    Path 1: (2,2), (4,3), (3,1), (5,1), (1,2), (4,4)
-                    Path 2: (2,2), (4,2), (1,3), (5,2), (3,2), (4,4)
-                '''
-                new_path_1 = [src_mac, (2,2), (4,3), (3,1), (5,1), (1,2), (4,4), dst_mac]
-                self.inst_path_rule(new_path_1, 1)
-                new_path_2 = [src_mac, (2,2), (4,2), (1,3), (5,2), (3,2), (4,4), dst_mac]
-                self.inst_path_rule(new_path_2, 1)
-        
-        # Comment the following line to activate DDos Attack
-        """
-
         # And we install the rule here.
         # Uncomment this line if you want the rule to be installed directly when a PACKET_IN is received.
         # Otherwise, find your ideal solution by working on the FlowRouteApp code.
