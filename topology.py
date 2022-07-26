@@ -25,7 +25,7 @@ class Topology(Topo):
         s5 = self.addSwitch('s5', protocols='OpenFlow13')
 
         for i in range(1,6):
-            s = self.__getitem__("s"+str(i))
+            s = self.switches()[i-1]
             s.sendCmd(f'ovs-vsctl set-controller s{i} tcp: localhost: 6633')
 
         info("*** Creating hosts\n")
