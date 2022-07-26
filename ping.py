@@ -5,27 +5,34 @@ import time
 from time import sleep
 from threading import Thread
 from unicodedata import name
+import os 
 
 # first we get the current timestamp
-t_now = time.time()
-print("Timestamp: ", t_now)
+T_NOW = time.time()
+print("Timestamp: ", T_NOW)
+IP_H3 = "10.0.0.3"
+FILE_NAME = "ping_output.txt"
+THREADS = []
 
-ip_h3 = ipaddress.ip_address('10.0.0.3')
+def ping_host(i):
+    output = subprocess.run(["ping", "-c", "1", "-s", "15000", IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
+    print(output.stdout)
+    with open(FILE_NAME, "a+") as file:
+        file.write(output.stdout)
+        file.write("\n")
 
-def ping_host():
-    with open(os.devnull, "wb") as limbo:
-        while(t_now < t_now + 60):   
-        # if we want to ping only one ip at a time, we have to uese subprocess.call()
-            ping = subprocess.Popen(["ping", "-c", "1", "-s", "15000", ip_h3],
-                            stdout=subprocess.PIPE, stderr=limbo).wait()
-            # we use communicate method to store the output of the command in a string
-            output = ping.communicate()[0]
-            print(output)
 
-def ping_thread():
+if __name__ == "__main__":
+    if os.path.exists(FILE_NAME):
+        os.remove(FILE_NAME)
+        with open(FILE_NAME, 'w') as f:
+            pass
+  
     for i in range(1,10,2):
-        thread = Thread(target=ping_host, args=i)
+        thread = Thread(target=ping_host, args=(i,))
+        THREADS.append(thread)
         thread.start()
-        thread.join()
-        # wait 1 sec in between each thread
-        sleep(1)
+        sleep(60)
+    
+    for t in THREADS:
+        t.join()

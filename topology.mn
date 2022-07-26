@@ -70,20 +70,28 @@
     "links": [
         {
             "dest": "s1",
-            "opts": {},
+            "opts": {
+                "bw": 5,
+                "delay": "5",
+                "max_queue_size": 10
+            },
             "src": "h1"
         },
         {
             "dest": "s2",
-            "opts": {},
+            "opts": {
+                "bw": 5,
+                "delay": "5",
+                "max_queue_size": 10
+            },
             "src": "h2"
         },
         {
             "dest": "s4",
             "opts": {
                 "bw": 10,
-                "delay": "20",
-                "max_queue_size": 4
+                "delay": "5",
+                "max_queue_size": 10
             },
             "src": "s2"
         },
@@ -91,8 +99,8 @@
             "dest": "s4",
             "opts": {
                 "bw": 10,
-                "delay": "20",
-                "max_queue_size": 4
+                "delay": "5",
+                "max_queue_size": 10
             },
             "src": "s1"
         },
@@ -100,8 +108,8 @@
             "dest": "s5",
             "opts": {
                 "bw": 5,
-                "delay": "20",
-                "max_queue_size": 4
+                "delay": "5",
+                "max_queue_size": 10
             },
             "src": "s1"
         },
@@ -109,8 +117,8 @@
             "dest": "s3",
             "opts": {
                 "bw": 5,
-                "delay": "20",
-                "max_queue_size": 4
+                "delay": "5",
+                "max_queue_size": 10
             },
             "src": "s5"
         },
@@ -118,19 +126,27 @@
             "dest": "s3",
             "opts": {
                 "bw": 10,
-                "delay": "20",
-                "max_queue_size": 4
+                "delay": "5",
+                "max_queue_size": 10
             },
             "src": "s4"
         },
         {
             "dest": "h3",
-            "opts": {},
+            "opts": {
+                "bw": 5,
+                "delay": "5",
+                "max_queue_size": 10
+            },
             "src": "s3"
         },
         {
             "dest": "hm",
-            "opts": {},
+            "opts": {
+                "bw": 5,
+                "delay": "5",
+                "max_queue_size": 10
+            },
             "src": "s4"
         }
     ],
