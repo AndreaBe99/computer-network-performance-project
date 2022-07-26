@@ -85,8 +85,8 @@ def flow_reroute_app(app):
 		
 		#### Flow Rule Dos Attack ####
 		# Uncomment the following two line to obtain a delay
-		# if hm and h2:
-		#	dos_attack(app, hm, h2)
+		if hm and h2:
+			dos_attack(app, hm, h2)
 
 		sys.stdout.flush()
 		sleep(5)
