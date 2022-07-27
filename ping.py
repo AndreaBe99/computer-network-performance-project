@@ -10,12 +10,23 @@ import os
 # first we get the current timestamp
 T_NOW = time.time()
 print("Timestamp: ", T_NOW)
-IP_H3 = "10.0.0.3"
+
 FILE_NAME = "ping_output.txt"
-THREADS = []
+
+# Dest IP
+IP_H3 = "10.0.0.3"
+
+# 15000 - 28 byte for header
+SIZE = "14972" 
+
+# 1 packet / 1 sec = 1.5 KB / 1 sec
+RATE = "1" 
+
+# ping -c 1 -s 14972 10.0.0.3 
+# ping -c 20 -s 14972 -i 1 10.0.0.3 
 
 def ping_host(i):
-    output = subprocess.run(["ping", "-c", "1", "-s", "15000", IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
+    output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     with open(FILE_NAME, "a+") as file:
         file.write(time.strftime("%H:%M:%S", time.time()))
@@ -28,12 +39,13 @@ if __name__ == "__main__":
         os.remove(FILE_NAME)
         with open(FILE_NAME, 'w') as f:
             pass
-  
+
+    threads = []       
     for i in range(1,10,2):
         thread = Thread(target=ping_host, args=(i,))
-        THREADS.append(thread)
+        threads.append(thread)
         thread.start()
-        sleep(60)
+        sleep(1)
     
-    for t in THREADS:
+    for t in threads:
         t.join()
