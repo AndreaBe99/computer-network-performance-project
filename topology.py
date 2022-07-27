@@ -13,10 +13,6 @@ class Topology(Topo):
         Topo.__init__(self)
         "Create a network from semi-scratch with multiple controllers."
 
-        # clean_net()
-        info("*** Creating (reference) controllers\n")
-        #c1 = self.addController('c1', port=6633)
-
         info("*** Creating switches\n")
         s1 = self.addSwitch('s1', protocols='OpenFlow13')
         s2 = self.addSwitch('s2', protocols='OpenFlow13')
@@ -38,20 +34,20 @@ class Topology(Topo):
 
         # Green Link
         # Set Bandwidth to 10Mbps, Delay to 5ms, Max Queue Size to 10
-        self.addLink(s1, s4, bw=10, delay='5ms', max_queue_size=10)
-        self.addLink(s2, s4, bw=10, delay='5ms', max_queue_size=10)
-        self.addLink(s3, s4, bw=10, delay='5ms', max_queue_size=10)
+        self.addLink(s1, s4, bw=10, delay='0.1ms', max_queue_size=10)
+        self.addLink(s2, s4, bw=10, delay='0.1ms', max_queue_size=10)
+        self.addLink(s3, s4, bw=10, delay='0.1ms', max_queue_size=10)
 
         # Blue Link
         # Set Bandwidth to 5Mbps, Delay to 5ms, Max Queue Size to 10
         self.addLink(s3, s5, bw=5, delay='5ms', max_queue_size=10)
         self.addLink(s1, s5, bw=5, delay='5ms', max_queue_size=10)
 
-    def clean_net(self):
-        """Clean mininet to allow to create new topology"""
-        info('*** Clean net\n')
-        cmd = "mn -c"
-        Popen(cmd, shell=True).wait()
+def clean_net():
+    """Clean mininet to allow to create new topology"""
+    info('*** Clean net\n')
+    cmd = "mn -c"
+    Popen(cmd, shell=True).wait()
 
 
 def run_topology():
@@ -62,18 +58,21 @@ def run_topology():
 
     # Create a network based on the topology using OVS and controlled by
     # a remote controller.
-    net = Mininet(
-        topo=topo,
-        controller=lambda name: RemoteController(name, ip='127.0.0.1'),
-        switch=OVSSwitch,
-        autoSetMacs=True)
+    net = Mininet( topo=topo,
+                   build=False,
+                   ipBase='10.0.0.0/24')
 
     # Actually start the network
-    net.start()
+    net.build()
+
+    info( '*** Starting controllers\n')
+    for controller in net.controllers:
+        controller.start()
+
     switch_list = ["s1", "s2", "s3", "s4", "s5"]
     for switch in switch_list:
         net.get(switch).start([])
-        net.get(switch).cmd("ovs-vsctl set-controller {} tcp:6633".format(switch))
+        net.get(switch).cmdPrint("ovs-vsctl set-controller {} tcp:6633".format(switch))
     
     info("*** Testing network\n")
     net.pingAll()
@@ -96,6 +95,6 @@ if __name__ == '__main__':
 
 """
 Allows the file to be imported using:
-    mn --custom topology.py --topo mytopo
+    sudo mn --custom topology.py --controller remote --switch ovsk --topo mytopo
 """
 topos = {'mytopo': (lambda: Topology())}

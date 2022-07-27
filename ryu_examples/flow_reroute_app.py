@@ -83,24 +83,27 @@ def flow_reroute_app(app):
 			# Add rule with priority equal to 2
 			app.inst_path_rule(path, 2)
 		
-		#### Flow Rule Dos Attack ####
+		#### Set Malicious Flow Rules ####
 		# Uncomment the following two line to obtain a delay
-		if hm and h2:
-			dos_attack(app, hm, h2)
+		#if hm and h2:
+		#	set_malicious_flows(app, hm, h2)
+
+		# Delete all the flows from the first datapath found in the dictionary:
+        #if len(app.dpids) > 0:
+        #    first_entry = list(app.dpids.keys())[0]
+        #    app.delete_flows(app.dpids[first_entry])
 
 		sys.stdout.flush()
 		sleep(5)
 
-def dos_attack(app, hm, h2):
-	###### DDos Attack ######
+# We use the priority field in the flow rules to generate multiple 
+# rules for the same pair of communicating hosts.
+def set_malicious_flows(app, hm, h2):
 
 	# Default Path: hm --> h2 
 	path = [hm["mac"], (4,1), (2,1), h2["mac"]]
 
-	# We use the priority field in the flow rules to generate multiple 
-	# rules for the same pair of communicating hosts.
-
-	# Set 10 flow rules with different priority to get a delay.
+	# Set 10 identical flow rules with different priority to get a delay.
 	for i in range(1, 10):
 		app.inst_path_rule(path, i)
 

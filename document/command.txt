@@ -8,6 +8,9 @@ ryu-manager --observe-links base_switch.py gui_topology.py
 
 ovs-vsctl show
 
+# Set topology without miniedit
+sudo mn --custom topology.py --controller remote --switch ovsk --topo mytopo
+
 # Show Flow rule
 sh ovs-ofctl dump-flows s1 --protocols=OpenFlow13
 
