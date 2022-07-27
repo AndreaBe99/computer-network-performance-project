@@ -38,11 +38,6 @@ def ping_host(i):
     RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
 
 if __name__ == "__main__":
-    if os.path.exists(FILE_NAME):
-        os.remove(FILE_NAME)
-        with open(FILE_NAME, 'w') as f:
-            pass
-
     threads = []       
     for i in range(1,21):
         thread = Thread(target=ping_host, args=(i,))
