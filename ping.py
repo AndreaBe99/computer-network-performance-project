@@ -32,14 +32,14 @@ RESULT = {}
 
 def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
-    #output = subprocess.run(["ping", "-c", "20", "-i", RATE, "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
+    # output = subprocess.run(["ping", "-c", "1", "-i", str(1/i), "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
 
 if __name__ == "__main__":
     threads = []       
-    for i in range(1,21):
+    for i in range(1,51):
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
