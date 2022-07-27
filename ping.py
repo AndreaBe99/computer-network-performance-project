@@ -32,7 +32,6 @@ RESULT = {}
 
 def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
-    # output = subprocess.run(["ping", "-c", "1", "-i", str(1/i), "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
@@ -45,7 +44,7 @@ if __name__ == "__main__":
         thread.start()
 
         # Increase Rate
-        sleep(1/i)
+        sleep(1)
     
     for t in threads:
         t.join()
