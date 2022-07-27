@@ -8,12 +8,13 @@ from unicodedata import name
 import os 
 
 from datetime import datetime
+import json
 
 # first we get the current timestamp
 T_NOW = time.time()
 print("Timestamp: ", T_NOW)
 
-FILE_NAME = "ping_output.txt"
+FILE_NAME = "ping_output.json"
 
 # Dest IP
 IP_H3 = "10.0.0.3"
@@ -27,16 +28,14 @@ RATE = "1"
 # ping -c 1 -s 14972 10.0.0.3 
 # ping -c 20 -s 14972 -i 1 10.0.0.3 
 
+RESULT = {}
+
 def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     #output = subprocess.run(["ping", "-c", "20", "-i", RATE, "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
-    with open(FILE_NAME, "a+") as file:
-        sttime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        file.write("Timestamp: " + sttime + "\n")
-        file.write(output.stdout)
-        file.write("\n")
-
+    sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
 
 if __name__ == "__main__":
     if os.path.exists(FILE_NAME):
@@ -45,7 +44,7 @@ if __name__ == "__main__":
             pass
 
     threads = []       
-    for i in range(1,10,2):
+    for i in range(1,21):
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
@@ -55,3 +54,6 @@ if __name__ == "__main__":
     
     for t in threads:
         t.join()
+    
+    with open(FILE_NAME, "w") as file:
+        json.dump(RESULT, file)
