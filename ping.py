@@ -7,6 +7,8 @@ from threading import Thread
 from unicodedata import name
 import os 
 
+from datetime import datetime
+
 # first we get the current timestamp
 T_NOW = time.time()
 print("Timestamp: ", T_NOW)
@@ -30,7 +32,8 @@ def ping_host(i):
     #output = subprocess.run(["ping", "-c", "20", "-i", RATE, "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     with open(FILE_NAME, "a+") as file:
-        file.write(time.strftime("%H:%M:%S", time.time()))
+        sttime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        file.write("Timestamp: ", sttime + "\n")
         file.write(output.stdout)
         file.write("\n")
 
