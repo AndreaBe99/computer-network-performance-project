@@ -33,7 +33,7 @@ def ping_host(i):
     print(output.stdout)
     with open(FILE_NAME, "a+") as file:
         sttime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        file.write("Timestamp: ", sttime + "\n")
+        file.write("Timestamp: " + sttime + "\n")
         file.write(output.stdout)
         file.write("\n")
 
