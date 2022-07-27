@@ -18,22 +18,23 @@ T_NOW = time.time()
 print("Timestamp: ", T_NOW)
 IP_H2 = "10.0.0.2"
 FILE_NAME = "ping_output.txt"
-THREADS = []
 
 def ping_host(i):
     # Increase size for each ping
-    for size in range(100, 65000, 100):
-        subprocess.run(["ping", "-s", str(size), IP_H2])
+    for i in range(100, 65000, 100):
+        subprocess.run(["ping", "-s", str(i), "-i", str(100/i),IP_H2])
 
 
 if __name__ == "__main__":
     for i in range(1,1000):
         thread = Thread(target=ping_host, args=(i,))
-        THREADS.append(thread)
+
+        threads = []
+        threads.append(thread)
         thread.start()
 
         # Increase frequency for each ping
         sleep(1/i)
     
-    for t in THREADS:
+    for t in threads:
         t.join()

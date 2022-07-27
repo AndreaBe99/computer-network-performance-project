@@ -27,6 +27,7 @@ RATE = "1"
 
 def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
+    #output = subprocess.run(["ping", "-c", "20", "-i", RATE, "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
     with open(FILE_NAME, "a+") as file:
         file.write(time.strftime("%H:%M:%S", time.time()))
@@ -45,7 +46,9 @@ if __name__ == "__main__":
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
-        sleep(1)
+
+        # Increase Rate
+        sleep(1/i)
     
     for t in threads:
         t.join()
