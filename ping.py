@@ -21,6 +21,7 @@ IP_H3 = "10.0.0.3"
 
 # 15000 - 28 byte for header
 SIZE = "14972" 
+# 20000 - 28 = 9972
 
 # 1 packet / 1 sec = 1.5 KB / 1 sec
 RATE = "1" 
@@ -38,13 +39,13 @@ def ping_host(i):
 
 if __name__ == "__main__":
     threads = []       
-    for i in range(1,51):
+    for i in range(1,21):
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
 
         # Increase Rate
-        sleep(1)
+        sleep(1/i)
     
     for t in threads:
         t.join()
