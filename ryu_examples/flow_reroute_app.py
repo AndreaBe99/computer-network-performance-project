@@ -10,7 +10,7 @@
 
 import sys
 from time import sleep
-from turtle import home
+from turtle import delay, home
 from network_graph import NetworkGraph
 
 HOST_NUMBER = 4
@@ -67,26 +67,21 @@ def flow_reroute_app(app):
 					h2 = host
 		
 		#### Flow Rule Plot 1 ####
-		# If host 1 and host are up, we get their MAC Address and we set the paths
-		if h1 and h3:
-			#### h1 --> h3 ####
-			src_mac = h1["mac"]
-			dst_mac = h3["mac"]
-			path = [src_mac, S1_PORT_H1_TO_H3, S4_PORT_H1_TO_H3, S3_PORT_H1_TO_H3, dst_mac]
-			# Add rule with priority equal to 2
-			app.inst_path_rule(path, 2)
-			
-			#### h3 --> h1 ####
-			src_mac = h3["mac"]
-			dst_mac = h1["mac"]
-			path = [src_mac, S1_PORT_H3_TO_H1, S4_PORT_H3_TO_H1, S3_PORT_H3_TO_H1, dst_mac]
-			# Add rule with priority equal to 2
-			app.inst_path_rule(path, 2)
+		# Comment the following two line if you don't want to set the rules
+		set_green_flow_rule(app, h1, h3)
 		
 		#### Set Malicious Flow Rules ####
 		# Uncomment the following two line to obtain a delay
-		#if hm and h2:
-		#	set_malicious_flows(app, hm, h2)
+		# set_malicious_flows(app, hm, h2)
+
+		### Controll delay ###
+		"""
+		if len(network.switches) == 5:
+			switches = network.switches
+			for switch in switches:
+				if int(switch["dpid"]) == 4:
+					s4 = switch
+		"""			
 
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
@@ -96,16 +91,34 @@ def flow_reroute_app(app):
 		sys.stdout.flush()
 		sleep(5)
 
+def set_green_flow_rule(app, h1, h3):
+	# If host 1 and host are up, we get their MAC Address and we set the paths
+	if h1 and h3:
+		#### h1 --> h3 ####
+		src_mac = h1["mac"]
+		dst_mac = h3["mac"]
+		path = [src_mac, S1_PORT_H1_TO_H3, S4_PORT_H1_TO_H3, S3_PORT_H1_TO_H3, dst_mac]
+		# Add rule with priority equal to 2
+		app.inst_path_rule(path, 2)
+		
+		#### h3 --> h1 ####
+		src_mac = h3["mac"]
+		dst_mac = h1["mac"]
+		path = [src_mac, S1_PORT_H3_TO_H1, S4_PORT_H3_TO_H1, S3_PORT_H3_TO_H1, dst_mac]
+		# Add rule with priority equal to 2
+		app.inst_path_rule(path, 2)
+
+
 # We use the priority field in the flow rules to generate multiple 
 # rules for the same pair of communicating hosts.
 def set_malicious_flows(app, hm, h2):
+	if hm and h2:
+		# Default Path: hm --> h2 
+		path = [hm["mac"], (4,1), (2,1), h2["mac"]]
 
-	# Default Path: hm --> h2 
-	path = [hm["mac"], (4,1), (2,1), h2["mac"]]
-
-	# Set 10 identical flow rules with different priority to get a delay.
-	for i in range(1, 10):
-		app.inst_path_rule(path, i)
+		# Set 10 identical flow rules with different priority to get a delay.
+		for i in range(1, 20):
+			app.inst_path_rule(path, i)
 
 	# To simulate a Dos Attack hm would have to send flows
 	# with increasing size and/or frequency, until a certain 
