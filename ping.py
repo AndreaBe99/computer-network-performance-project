@@ -39,7 +39,7 @@ def ping_host(i):
 
 if __name__ == "__main__":
     threads = []       
-    for i in range(1,51):
+    for i in range(1,31):
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
