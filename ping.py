@@ -37,21 +37,34 @@ def ping_host(i):
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
 
-if __name__ == "__main__":
-    threads = []       
+def plot_1(threads):
     for i in range(1,31):
         thread = Thread(target=ping_host, args=(i,))
         threads.append(thread)
         thread.start()
-
         # Increase Rate
-        # For plot 1
-        # sleep(1/i)
-        # For plot 2
-        sleep(1)    
+        sleep(1/i)
+
+    return threads
+
+def plot_2(threads):
+    for i in range(1,101):
+        thread = Thread(target=ping_host, args=(i,))
+        threads.append(thread)
+        thread.start()
+        # Increase Rate
+        sleep(1)
+
+    return threads
+
+if __name__ == "__main__":
+    threads = []       
+    # threads = plot_1(threads) 
+    threads = plot_2(threads) 
 
     for t in threads:
         t.join()
     
     with open(FILE_NAME, "w") as file:
         json.dump(RESULT, file)
+
