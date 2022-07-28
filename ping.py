@@ -45,8 +45,11 @@ if __name__ == "__main__":
         thread.start()
 
         # Increase Rate
-        sleep(1/i)
-    
+        # For plot 1
+        # sleep(1/i)
+        # For plot 2
+        sleep(1)    
+
     for t in threads:
         t.join()
     
