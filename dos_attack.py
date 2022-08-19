@@ -17,7 +17,6 @@ import os
 T_NOW = time.time()
 print("Timestamp: ", T_NOW)
 IP_H2 = "10.0.0.2"
-FILE_NAME = "ping_output.txt"
 
 def ping_host(i):
     # Increase size for each ping
