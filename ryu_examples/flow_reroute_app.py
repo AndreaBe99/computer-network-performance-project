@@ -75,9 +75,9 @@ def flow_reroute_app(app):
 		
 		#### Set Malicious Flow Rules ####
 		# Uncomment the following two line to obtain a delay
-		# set_malicious_flows(app, hm, h2)
+		set_malicious_flows(app, hm, h2)
 
-		### Controll delay ###
+		### Redirection ###
 		read_rtt_h1(app, h1, h3)
 
 		# Delete all the flows from the first datapath found in the dictionary:
