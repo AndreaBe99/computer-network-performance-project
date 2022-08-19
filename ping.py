@@ -9,6 +9,7 @@ import os
 
 from datetime import datetime
 import json
+import re
 
 # first we get the current timestamp
 T_NOW = time.time()
@@ -34,8 +35,20 @@ RESULT = {}
 def ping_host(i):
     output = subprocess.run(["ping", "-c", "1", "-s", SIZE, IP_H3], stdout=subprocess.PIPE, encoding="utf-8")
     print(output.stdout)
+    rtt = re.findall("min/avg/max/mdev = (.*)ms\n", output.stdout)
+    rtt_dict = {}
+    if len(rtt) > 0:
+        rtt_split = rtt[0].split("/")
+        rtt_dict["min"] = rtt_split[0]
+        rtt_dict["avg"] = rtt_split[1]
+        rtt_dict["max"] = rtt_split[2]
+        rtt_dict["mdev"] = rtt_split[3]
+
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    RESULT[i] = {"Timestamp":sttime, "Output":output.stdout}
+    RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict, "Output":output.stdout}
+
+    with open(FILE_NAME, "w") as file:
+        json.dump(RESULT[i], file)
 
 def plot_1(threads):
     for i in range(1,31):
@@ -65,6 +78,6 @@ if __name__ == "__main__":
     for t in threads:
         t.join()
     
-    with open(FILE_NAME, "w") as file:
-        json.dump(RESULT, file)
+    # with open(FILE_NAME, "w") as file:
+    #    json.dump(RESULT, file)
 

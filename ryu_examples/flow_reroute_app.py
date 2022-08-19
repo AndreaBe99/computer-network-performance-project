@@ -12,6 +12,9 @@ import sys
 from time import sleep
 from turtle import delay, home
 from network_graph import NetworkGraph
+import json
+
+FILE_NAME = "ping_output.json"
 
 HOST_NUMBER = 4
 
@@ -75,13 +78,7 @@ def flow_reroute_app(app):
 		# set_malicious_flows(app, hm, h2)
 
 		### Controll delay ###
-		"""
-		if len(network.switches) == 5:
-			switches = network.switches
-			for switch in switches:
-				if int(switch["dpid"]) == 4:
-					s4 = switch
-		"""			
+		read_rtt_h1(app, h1, h3)
 
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
@@ -125,6 +122,15 @@ def set_malicious_flows(app, hm, h2):
 	# value is reached wich involves the drop of some of the flows passing by for s4.
 
 	# To do this we use another python script to execute ping from hm
+
+def read_rtt_h1(app, h1, h3):
+	with open(FILE_NAME, "w") as file:
+		ping = json.load(file)
+	print(ping["Rtt"])
+
+	if int(ping["Rtt"]["avg"]) > 1000:
+		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
+		app.inst_path_rule(path, 2)
 		
 if __name__ == "__main__":
 	print("This script is not meant to be run directly.")
