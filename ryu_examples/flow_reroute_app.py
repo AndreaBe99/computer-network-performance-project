@@ -71,13 +71,13 @@ def flow_reroute_app(app):
 					h2 = host
 		
 		#### Flow Rule Plot 1 ####
-		# Comment the following two line if you don't want to set the rules
+		# Comment the following two lines if you don't want to set the rules
 		set_green_flow_rule(app, h1, h3)
 		
 		#### Set Malicious Flow Rules ####
-		# Uncomment the following two line to obtain a delay
+		# Comment the following line to if you don't want obtain a delay
 		set_malicious_flows(app, hm, h2)
-
+		
 		### Redirection ###
 		read_rtt_h1(app, h1, h3)
 
