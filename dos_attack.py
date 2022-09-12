@@ -12,10 +12,6 @@ import os
     To simulate a Dos Attack hm would have to send flows with increasing size and/or frequency, 
     until a certain value is reached wich involves the drop of some of the flows passing by for s4.
 """
-
-# first we get the current timestamp
-T_NOW = time.time()
-print("Timestamp: ", T_NOW)
 IP_H2 = "10.0.0.2"
 
 def ping_host(i):
@@ -26,14 +22,13 @@ def ping_host(i):
 
 if __name__ == "__main__":
     for i in range(1,1000):
-        thread = Thread(target=ping_host, args=(i,))
-
-        threads = []
-        threads.append(thread)
-        thread.start()
-
+        worker = Thread(target=ping_host, args=(i,))
+        workers = []
+        workers.append(worker)
+        worker.setDaemon(True)
+        worker.start()
         # Increase frequency for each ping
         sleep(1/i)
     
-    for t in threads:
-        t.join()
+    for w in workers:
+        w.join()
