@@ -1,1 +1,0 @@
-{"Timestamp": "2022-08-19 08:53:55.000", "Rtt": {}, "Output": "PING 10.0.0.3 (10.0.0.3) 14972(15000) bytes of data.\n\n--- 10.0.0.3 ping statistics ---\n1 packets transmitted, 0 received, 100% packet loss, time 0ms\n\n"}

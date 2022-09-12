@@ -15,7 +15,8 @@ import re
 T_NOW = time.time()
 print("Timestamp: ", T_NOW)
 
-FILE_NAME = "ping_output.json"
+LAST_PING = "last_ping.json"
+PING_LIST = "ping_list.json"
 
 # Dest IP
 IP_H3 = "10.0.0.3"
@@ -44,11 +45,12 @@ def ping_host(i):
         rtt_dict["max"] = rtt_split[2]
         rtt_dict["mdev"] = rtt_split[3]
 
-    sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict, "Output":output.stdout}
+        sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict, "Output":output.stdout}
 
-    with open(FILE_NAME, "w") as file:
-        json.dump(RESULT[i], file)
+        with open(LAST_PING, "w") as file:
+            json.dump(RESULT[i], file)
+
 
 def plot_1(threads):
     for i in range(1,31):
@@ -78,6 +80,6 @@ if __name__ == "__main__":
     for t in threads:
         t.join()
     
-    # with open(FILE_NAME, "w") as file:
-    #    json.dump(RESULT, file)
+    with open(PING_LIST, "w") as file:
+        json.dump(RESULT, file)
 

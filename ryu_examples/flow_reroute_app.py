@@ -15,7 +15,8 @@ from network_graph import NetworkGraph
 import json
 import os
 
-FILE_NAME = "../ping_output.json"
+LAST_PING = "../last_ping.json"
+PING_LIST = "../ping_list.json"
 
 HOST_NUMBER = 4
 
@@ -70,16 +71,40 @@ def flow_reroute_app(app):
 				if "s2" in port_name and host["ipv4"] != []:
 					h2 = host
 		
-		#### Flow Rule Plot 1 ####
+		############# PLOT 1 #############
+		########### Flow Rule ############
+		# Consider a total traffic rate λ13, create a plot that shows how the
+		# latency T increases by injecting an increasing rate λ13. 
+
 		# Comment the following two lines if you don't want to set the rules
 		set_green_flow_rule(app, h1, h3)
 		
+
+		############# PLOT 2 #############
 		#### Set Malicious Flow Rules ####
+		# Use a timeline plot to show the increase in the latency T observed 
+		# between H1 and H3 as a consequence of the ongoing attack.
+
 		# Comment the following line to if you don't want obtain a delay
 		set_malicious_flows(app, hm, h2)
-		
-		### Redirection ###
+
+
+		############# PLOT 3 #############
+		########## Redirection ###########
+		# Use another timeline plot to show the system behavior when it first 
+		# discovers the attack and later reacts to it by redirecting the flow along p2.
+
+		# Comment the following line to if you don't want obtain a redicretion
 		read_rtt_h1(app, h1, h3)
+
+
+		############# PLOT 4 #############
+		############ Recovery ############
+		# Have the controller block the maliciuos traffic after the redirection 
+		# and dynamically re-establish the more convenient route along path p1. 
+
+		### code...??
+
 
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
@@ -125,11 +150,18 @@ def set_malicious_flows(app, hm, h2):
 	# To do this we use another python script to execute ping from hm
 
 def read_rtt_h1(app, h1, h3):
-	if os.path.exists(FILE_NAME):
-		with open(FILE_NAME, "r") as file:
+	if os.path.exists(LAST_PING):
+		with open(LAST_PING, "r") as file:
 			ping = json.load(file)
-		print(ping["Rtt"])
 
+		# max_id_item = str(max([eval(i) for i in ping.keys()]))
+		# print("##########################################################")
+		# print("ID: ", max_id_item, " RTT: ", ping[max_id_item]["Rtt"]["avg"]) 
+		# print("##########################################################")
+
+		print("##########################################################")
+		print("Time: ", ping["Timestamp"], " RTT: ", ping["Rtt"]["avg"]) 
+		print("##########################################################")
 		if float(ping["Rtt"]["avg"]) > 1000:
 			path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
 			app.inst_path_rule(path, 2)
