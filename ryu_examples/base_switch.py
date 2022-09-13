@@ -163,11 +163,12 @@ class BaseSwitch(app_manager.RyuApp):
             print(e)
         """
         ########################
-
-        network = NetworkGraph()
-        hm = None
         src_mac = eth.src
         dst_mac = eth.dst
+
+        # Find hm host to drop packet from it for Plot 4
+        hm = None
+        network = NetworkGraph()
         hosts = network.hosts
         for host in hosts:
             port_name = host["port"]["name"]
@@ -190,7 +191,8 @@ class BaseSwitch(app_manager.RyuApp):
 
             src_mac = network.get_host_by_ip(arp_src)
             dst_mac = network.get_host_by_ip(arp_dst)
-
+            
+            # Drop Packet from hm because is malicious (For Plot 4)
             if src_mac == hm:
                 print("Dropping packet...")
                 return
