@@ -1,7 +1,16 @@
 #### COMMAND ####
-# Start ovs
+# Install usefull package
+sudo pip install networkx
+sudo pip install matplotlib
+
+# (Optional) Start ovs
 sudo /usr/share/openvswitch/scripts/ovs-ctl start 
 
+# Launch Ryu
+cd ryu_examples 
+ryu-manager --observe-links base_switch.py gui_topology.py
+
+# In another terminal
 # 1. Clean 
 sudo mn -c
 
@@ -9,14 +18,18 @@ sudo mn -c
 sudo python3 run_network.py
 
 # 2a. Open shell of an host
-nome_host base_switch
+hostName base_switch
 
-# Open new terminal window
+# 2b. Open new terminal window
 /usr/bin/dbus-launch /usr/bin/gnome-terminal &
 
-# 3. In another terminal
-cd ryu_examples 
-ryu-manager --observe-links base_switch.py gui_topology.py
+# 2c. Launch python scripts
+# For host h1
+python3 ping.py
+# For host hm
+python3 dos_attack.py
+
+
 
 # Other
 # To open miniedit

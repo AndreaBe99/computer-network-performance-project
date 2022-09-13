@@ -146,6 +146,7 @@ def set_malicious_flows(app, hm, h2):
 	# To do this we use another python script to execute ping from hm
 
 def read_rtt_h1(app, h1, h3):
+	global REDIRECT
 	# We have already applied the flow route, we can exit
 	if REDIRECT > 3:
 		return
