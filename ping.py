@@ -8,9 +8,9 @@ from unicodedata import name
 import os 
 
 from datetime import datetime
+import time
 import json
 import re
-import time
 
 LAST_PING = "last_ping.json"
 PING_LIST = "ping_list.json"
@@ -56,13 +56,12 @@ if __name__ == "__main__":
     while time.time() < t_end:
     # for i in range(1, NUM_THREAD+1):
         worker = Thread(target=ping_host, args=(i,))
-        i += 1
         workers.append(worker)
         worker.setDaemon(True)
         worker.start()
-
         # sleep(1/i)    # PLOT 1
         sleep(1)        # PLOT 2
+        i += 1
 
     for w in workers:
         w.join()

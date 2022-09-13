@@ -120,7 +120,7 @@ def flow_reroute_app(app):
 		sleep(5)
 
 def set_green_flow_rule(app, h1, h3):
-	# If host 1 and host 3 are up, we get their MAC Address and we set the paths
+	# If host 1 and host are up, we get their MAC Address and we set the paths
 	if h1 and h3:
 		#### h1 --> h3 ####
 		src_mac = h1["mac"]
@@ -177,6 +177,7 @@ def read_rtt_h1(app, h1, h3):
 		print("##########################################################")
 		if float(ping["Rtt"]["avg"]) > 2000:
 			REDIRECT += 1
+
 		
 if __name__ == "__main__":
 	print("This script is not meant to be run directly.")
