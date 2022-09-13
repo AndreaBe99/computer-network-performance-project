@@ -157,8 +157,8 @@ def read_rtt_h1(app, h1, h3):
 		# Have the controller block the maliciuos traffic after the redirection 
 		# and dynamically re-establish the more convenient route along path p1. 
 		# Set the variable to drop packet from hm
-		app.drop_hm_packet = True
-		
+		app.drop_hm_packet = True		# Comment this line to avoid to block hm
+
 		# Set new path rule
 		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
 		app.inst_path_rule(path, 2)
