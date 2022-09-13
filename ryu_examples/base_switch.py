@@ -35,6 +35,9 @@ class BaseSwitch(app_manager.RyuApp):
         self.sw_module = None
         self.network_aware = None
 
+        # For Plot 4 we use a boolean to activate/disactivate block for hm
+        self.drop_hm_packet = False
+
     # We set here an event to handle the first message that the switches will send when they connect to the controller.
     # When a switch connects, we also save its associated datapath object and identifier, so that we can later
     # send any kind of messages to it without waiting for PACKET_IN messages.
@@ -132,37 +135,7 @@ class BaseSwitch(app_manager.RyuApp):
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             # ignore lldp packet
             return
-
-        ##### Measure Delay #####
-        # To do this we have to comment above if
-        # Uncomment this section and at 283 row for RTT monitoting
-        """
-        Obtain the LLDP delay
-        The logic for obtaining T1 and T2 is the same, and both need to use the data of the Switches module. 
-        The processing logic for calculating the LLDP delay is shown in the following code. 
-        First parse the LLDP data packet from Packet\_in to obtain the source DPID and source port. 
-        Then get the sending timestamp data in portdata according to the data of the sending port, and subtract 
-        the sending timestamp from the current system time to get the delay, and finally save it in the graph data.
-        \"""
-        msg = ev.msg
-        try:
-            src_dpid, src_port_no = LLDPPacket.lldp_parse(msg.data)
-            dpid = msg.datapath.id
-            in_port = msg.match['in_port']
-            if self.sw_module is None:
-                self.sw_module = lookup_service_brick('switches')
-            for port in self.sw_module.ports.keys():
-                if src_dpid == port.dpid and src_port_no == port.port_no:
-                    port_data = self.sw_module.ports[port]
-                    timestamp = port_data.timestamp
-                    if timestamp:
-                        delay = time.time()-timestamp
-                        self._save_delay_data(src=src_dpid, dst=dpid,
-                                                lldpdelay=delay)
-        except LLDPPacket.LLDPUnknownFormat as e:
-            print(e)
-        """
-        ########################
+            
         src_mac = eth.src
         dst_mac = eth.dst
 
@@ -193,8 +166,8 @@ class BaseSwitch(app_manager.RyuApp):
             dst_mac = network.get_host_by_ip(arp_dst)
             
             # Drop Packet from hm because is malicious (For Plot 4)
-            if src_mac == hm:
-                print("Dropping packet...")
+            if self.drop_hm_packet and src_mac == hm:
+                print("Dropping packet from hm...")
                 return
 
             if not dst_mac:
@@ -293,79 +266,3 @@ class BaseSwitch(app_manager.RyuApp):
                                   data=data)
 
         datapath.send_msg(out)
-
-    # Uncomment this section for RTT monitoting
-    """
-    #### Get Echo delay ####
-    # After that, we also need to test the echo round trip delay between the controller and the switch. 
-
-    # The measurement method is to obtain the round trip time difference by sending the echo_request 
-    # message with a timestamp from the controller to the switch
-    def _measure(self):
-        while True:
-            self._send_echo_request()
-            hub.sleep(self.SLEEP_PERIOD)
-    
-    # parse the echo_reply returned by the switch, and subtract the parsed transmission time of the 
-    # data part from the current time. 
-    def _send_echo_request(self):
-        for datapath in self.datapaths.values():
-            parser = datapath.ofproto_parser
-            data = "%.6f"% time.time()
-            echo_req = parser.OFPEchoRequest(datapath, data=data)
-            datapath.send_msg(echo_req)
-    
-    # sending and parsing of echo_request. 
-    @set_ev_cls(ofp_event.EventOFPEchoReply, MAIN_DISPATCHER)
-    def echo_reply_handler(self, ev):
-        try:
-            latency = time.time()-eval(ev.msg.data)
-            self.echo_latency[ev.msg.datapath.id] = latency
-        except:
-            return
-    
-
-    #### Calculate link delay ###
-    # After completing the delay data acquisition, it is also necessary to calculate the link delay based 
-    # on these data. The formula is T=(T1+T2-Ta-Tb)/2. So write the calculation method, the sample code is 
-    # as follows. 
-
-    # The get_delay method is used to calculate the link delay between the corresponding switches
-    def get_dalay(self, src, dst):
-        try:
-            fwd_delay = self.graph[src][dst]['lldpdelay']
-            re_delay = self.graph[dst][src]['lldpdelay']
-            src_latency = self.echo_latency[src]
-            dst_latency = self.echo_latency[dst]
-            delay = (fwd_delay + re_delay-src_latency-dst_latency)/2
-            return max(delay, 0)
-        except:
-            return float('inf')
-
-    # the_save_delay_data can be used to calculate and store the lldp delay and link delay, and its 
-    # function depends on the incoming parameters.
-    def _save_delay_data(self, weight='lldpdelay', src=0, dst=0, lldpdelay=0):
-        if self.network_aware is None:
-            self.network_aware = lookup_service_brick('network_aware')
-            return
-        else:
-            self.graph = self.network_aware.graph
-            if weight =='delay':
-                for src in self.graph:
-                    for dst in self.graph[src]:
-                        if src == dst:
-                            self.graph[src][dst][weight] = 0
-                            continue
-                        self.graph[src][dst][weight] = self.get_dalay(src, dst)
-            elif weight =='lldpdelay':
-                try:
-                    self.graph[src][dst][weight] = lldpdelay
-                except:
-                    return
-
-    # The calculate_link_delay method is used to call the calculation method and store 
-    # the delay result in the networkx graph data structure.
-    def calculate_link_delay(self):
-        self._save_delay_data(weight='delay')
-    
-    """

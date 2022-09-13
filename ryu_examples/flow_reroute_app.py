@@ -102,15 +102,6 @@ def flow_reroute_app(app):
 		# Comment the following line to if you don't want obtain a redicretion
 		read_rtt_h1(app, h1, h3)
 
-
-		############# PLOT 4 #############
-		############ Recovery ############
-		# Have the controller block the maliciuos traffic after the redirection 
-		# and dynamically re-establish the more convenient route along path p1. 
-
-		### code...??
-
-
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
         #    first_entry = list(app.dpids.keys())[0]
@@ -161,20 +152,29 @@ def read_rtt_h1(app, h1, h3):
 
 	# If we have 3 delay we apply the new flow route
 	if REDIRECT > 2:
+		############# PLOT 4 #############
+		############ Recovery ############
+		# Have the controller block the maliciuos traffic after the redirection 
+		# and dynamically re-establish the more convenient route along path p1. 
+		# Set the variable to drop packet from hm
+		app.drop_hm_packet = True
+		
+		# Set new path rule
 		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
 		app.inst_path_rule(path, 2)
-		print("##########################################################")
-		print(" Attack Detection: path redirection on H1->S1->S5->S3->H3 ")
-		print("##########################################################")
+		print("#"*55)
+		print("Attack Detection: path redirection on H1->S1->S5->S3->H3")
+		print("#"*55)
+		
 
 	# We check the RTT from the file
 	if os.path.exists(LAST_PING):
 		with open(LAST_PING, "r") as file:
 			ping = json.load(file)
 
-		print("##########################################################")
-		print("Time: ", ping["Timestamp"], " RTT: ", ping["Rtt"]["avg"]) 
-		print("##########################################################")
+		print("#"*55)
+		print("Time: ", ping["Timestamp"], " RTT: ", ping["Rtt"]["avg"])
+		print("#"*55)
 		if float(ping["Rtt"]["avg"]) > 2000:
 			REDIRECT += 1
 
