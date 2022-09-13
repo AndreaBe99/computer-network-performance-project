@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 import json
 import re
+import time
 
 LAST_PING = "last_ping.json"
 PING_LIST = "ping_list.json"
@@ -17,7 +18,7 @@ PING_LIST = "ping_list.json"
 ## PLOT 1
 # NUM_THREAD = 30
 ## PLOT 2
-NUM_THREAD = 100
+NUM_THREAD = 1000
 
 # Dest IP
 IP_H3 = "10.0.0.3"
@@ -49,8 +50,13 @@ def ping_host(i):
 if __name__ == "__main__":
     workers = []       
 
-    for i in range(1, NUM_THREAD+1):
+    # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
+    t_end = time.time() + 60 * 15 # 900 s
+    i = 1
+    while time.time() < t_end:
+    # for i in range(1, NUM_THREAD+1):
         worker = Thread(target=ping_host, args=(i,))
+        i += 1
         workers.append(worker)
         worker.setDaemon(True)
         worker.start()
