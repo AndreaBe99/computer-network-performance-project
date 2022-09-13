@@ -21,7 +21,11 @@ def ping_host(i):
 
 
 if __name__ == "__main__":
-    for i in range(1,1000):
+    # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
+    t_end = time.time() + 60 * 5 # 300 s
+    i = 1
+    while time.time() < t_end:
+    #for i in range(1,1000):
         worker = Thread(target=ping_host, args=(i,))
         workers = []
         workers.append(worker)
@@ -29,6 +33,7 @@ if __name__ == "__main__":
         worker.start()
         # Increase frequency for each ping
         sleep(1/i)
+        i += 1
     
     for w in workers:
         w.join()
