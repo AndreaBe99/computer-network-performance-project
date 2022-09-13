@@ -18,6 +18,11 @@ import os
 LAST_PING = "../last_ping.json"
 PING_LIST = "../ping_list.json"
 
+# we use a global variable to count the nummber of packet 
+# with an RTT > 2000, this beacuse we want to avoid to redirect
+# the flow after a single delay.
+REDIRECT = 0
+
 HOST_NUMBER = 4
 
 """
@@ -150,24 +155,28 @@ def set_malicious_flows(app, hm, h2):
 	# To do this we use another python script to execute ping from hm
 
 def read_rtt_h1(app, h1, h3):
+	# We have already applied the flow route, we can exit
+	if REDIRECT > 3:
+		return
+
+	# If we have 3 delay we apply the new flow route
+	if REDIRECT > 2:
+		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
+		app.inst_path_rule(path, 2)
+		print("##########################################################")
+		print(" Attack Detection: path redirection on H1->S1->S5->S3->H3 ")
+		print("##########################################################")
+
+	# We check the RTT from the file
 	if os.path.exists(LAST_PING):
 		with open(LAST_PING, "r") as file:
 			ping = json.load(file)
 
-		# max_id_item = str(max([eval(i) for i in ping.keys()]))
-		# print("##########################################################")
-		# print("ID: ", max_id_item, " RTT: ", ping[max_id_item]["Rtt"]["avg"]) 
-		# print("##########################################################")
-
 		print("##########################################################")
 		print("Time: ", ping["Timestamp"], " RTT: ", ping["Rtt"]["avg"]) 
 		print("##########################################################")
-		if float(ping["Rtt"]["avg"]) > 1000:
-			path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
-			app.inst_path_rule(path, 2)
-			print("##########################################################")
-			print(" Attack Detection: path redirection on H1->S1->S5->S3->H3 ")
-			print("##########################################################")
+		if float(ping["Rtt"]["avg"]) > 2000:
+			REDIRECT += 1
 		
 if __name__ == "__main__":
 	print("This script is not meant to be run directly.")
