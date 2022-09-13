@@ -12,7 +12,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet, arp, icmp, ipv4
 from ryu.lib.packet import ether_types
 
-#### We add these library for TRT Monitoring
+# We add these library for TRT Monitoring
 from ryu.topology.switches import LLDPPacket
 from ryu.base.app_manager import lookup_service_brick
 from ryu.lib import hub
@@ -132,7 +132,7 @@ class BaseSwitch(app_manager.RyuApp):
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             # ignore lldp packet
             return
-        
+
         ##### Measure Delay #####
         # To do this we have to comment above if
         # Uncomment this section and at 283 row for RTT monitoting
@@ -165,9 +165,15 @@ class BaseSwitch(app_manager.RyuApp):
         ########################
 
         network = NetworkGraph()
-
+        hm = None
         src_mac = eth.src
         dst_mac = eth.dst
+        hosts = network.hosts
+        for host in hosts:
+            port_name = host["port"]["name"]
+
+            if "s4" in port_name and host["ipv4"] != []:
+                hm = host
 
         # If the destination mac is not known, but only the IP, we try to find the correct destination by looking
         # at the NetworkGraph of our network.
@@ -185,6 +191,10 @@ class BaseSwitch(app_manager.RyuApp):
             src_mac = network.get_host_by_ip(arp_src)
             dst_mac = network.get_host_by_ip(arp_dst)
 
+            if src_mac == hm:
+                print("Dropping packet...")
+                return
+
             if not dst_mac:
                 print("One host tried to reach another host which has not entered the network yet. Dropping packet...")
                 print("Try to ping from the destination host before!")
@@ -196,7 +206,7 @@ class BaseSwitch(app_manager.RyuApp):
             return
 
         path = paths[0]
-        
+
         # And we install the rule here.
         # Uncomment this line if you want the rule to be installed directly when a PACKET_IN is received.
         # Otherwise, find your ideal solution by working on the FlowRouteApp code.
@@ -213,10 +223,10 @@ class BaseSwitch(app_manager.RyuApp):
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
                                   in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
-    
 
     # Simple function which, given a path with ports and a datapath, returns the port which that datapath has to use
     # as an output, to allow the packet to travel through the given path.
+
     def next_port(self, path, dpid):
 
         for n in range(1, len(path) - 1):
@@ -260,8 +270,10 @@ class BaseSwitch(app_manager.RyuApp):
 
         pkt = packet.Packet()
 
-        pkt.add_protocol(ethernet.ethernet(ethertype=0x0800, dst='ff:ff:ff:ff:ff:ff', src='00:00:00:00:00:00'))
-        pkt.add_protocol(ipv4.ipv4(ttl=255, csum=0, dst=dst, src='10.0.0.255', proto=1, option=None))
+        pkt.add_protocol(ethernet.ethernet(ethertype=0x0800,
+                         dst='ff:ff:ff:ff:ff:ff', src='00:00:00:00:00:00'))
+        pkt.add_protocol(ipv4.ipv4(ttl=255, csum=0, dst=dst,
+                         src='10.0.0.255', proto=1, option=None))
         pkt.add_protocol(icmp.icmp(type_=icmp.ICMP_ECHO_REQUEST, code=icmp.ICMP_ECHO_REPLY_CODE, csum=0,
                                    data=icmp.echo(id_=0, seq=0, data=None)))
 
@@ -279,7 +291,6 @@ class BaseSwitch(app_manager.RyuApp):
                                   data=data)
 
         datapath.send_msg(out)
-
 
     # Uncomment this section for RTT monitoting
     """
