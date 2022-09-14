@@ -14,16 +14,12 @@ import os
 """
 IP_H2 = "10.0.0.2"
 
-# 15000 - 28 byte for header
-SIZE = "14972" 
 
 def ping_host(i):
     # Increase size for each ping
     for i in range(100, 65000, 100):
         # ping without size
-        # subprocess.run(["ping", "-s", str(i), "-i", str(100/i),IP_H2])
-        # ping with size
-        subprocess.run(["ping", "-s", str(i), "-i", str(100/i), "-s", SIZE, IP_H2])
+        subprocess.run(["ping", "-s", str(i), "-i", str(100/i),IP_H2])
 
 
 if __name__ == "__main__":
