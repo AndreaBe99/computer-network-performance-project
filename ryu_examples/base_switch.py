@@ -165,10 +165,12 @@ class BaseSwitch(app_manager.RyuApp):
             src_mac = network.get_host_by_ip(arp_src)
             dst_mac = network.get_host_by_ip(arp_dst)
             
-            # Drop Packet from hm because is malicious (For Plot 4)
+            ########## PLOT 4 ##########
+            # Drop Packet from hm because is malicious
             if self.drop_hm_packet and src_mac == hm:
                 print("Dropping packet from hm...")
                 return
+            ############################
 
             if not dst_mac:
                 print("One host tried to reach another host which has not entered the network yet. Dropping packet...")

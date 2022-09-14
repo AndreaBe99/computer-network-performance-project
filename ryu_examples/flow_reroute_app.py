@@ -82,7 +82,7 @@ def flow_reroute_app(app):
 		# latency T increases by injecting an increasing rate λ13. 
 
 		# Comment the following two lines if you don't want to set the rules
-		set_green_flow_rule(app, h1, h3)
+		set_green_flow_rule(app, h1, h3, 2)
 		
 
 		############# PLOT 2 #############
@@ -100,7 +100,13 @@ def flow_reroute_app(app):
 		# discovers the attack and later reacts to it by redirecting the flow along p2.
 
 		# Comment the following line to if you don't want obtain a redicretion
-		read_rtt_h1(app, h1, h3)
+		read_rtt_h1(app, h1, h3, 2)
+
+
+		############# PLOT 4 #############
+		############ Revovery ############
+		if app.drop_hm_packet:
+			set_green_flow_rule(app, h1, h3, 10)
 
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
@@ -110,7 +116,7 @@ def flow_reroute_app(app):
 		sys.stdout.flush()
 		sleep(5)
 
-def set_green_flow_rule(app, h1, h3):
+def set_green_flow_rule(app, h1, h3, priority):
 	# If host 1 and host are up, we get their MAC Address and we set the paths
 	if h1 and h3:
 		#### h1 --> h3 ####
@@ -118,14 +124,14 @@ def set_green_flow_rule(app, h1, h3):
 		dst_mac = h3["mac"]
 		path = [src_mac, S1_PORT_H1_TO_H3, S4_PORT_H1_TO_H3, S3_PORT_H1_TO_H3, dst_mac]
 		# Add rule with priority equal to 2
-		app.inst_path_rule(path, 2)
+		app.inst_path_rule(path, priority)
 		
 		#### h3 --> h1 ####
 		src_mac = h3["mac"]
 		dst_mac = h1["mac"]
 		path = [src_mac, S1_PORT_H3_TO_H1, S4_PORT_H3_TO_H1, S3_PORT_H3_TO_H1, dst_mac]
 		# Add rule with priority equal to 2
-		app.inst_path_rule(path, 2)
+		app.inst_path_rule(path, priority)
 
 
 # We use the priority field in the flow rules to generate multiple 
@@ -145,7 +151,7 @@ def set_malicious_flows(app, hm, h2):
 
 	# To do this we use another python script to execute ping from hm
 
-def read_rtt_h1(app, h1, h3):
+def read_rtt_h1(app, h1, h3, priority):
 	global REDIRECT
 	# We have already applied the flow route, we can exit
 	if REDIRECT > 3:
@@ -153,8 +159,6 @@ def read_rtt_h1(app, h1, h3):
 
 	# If we have 3 delay we apply the new flow route
 	if REDIRECT > 2:
-		############# PLOT 4 #############
-		############ Recovery ############
 		# Have the controller block the maliciuos traffic after the redirection 
 		# and dynamically re-establish the more convenient route along path p1. 
 		# Set the variable to drop packet from hm
@@ -162,7 +166,7 @@ def read_rtt_h1(app, h1, h3):
 
 		# Set new path rule
 		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
-		app.inst_path_rule(path, 2)
+		app.inst_path_rule(path, priority)
 		print("#"*55)
 		print("Attack Detection: path redirection on H1->S1->S5->S3->H3")
 		print("#"*55)
