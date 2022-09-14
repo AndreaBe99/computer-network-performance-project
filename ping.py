@@ -51,7 +51,7 @@ if __name__ == "__main__":
     workers = []       
 
     # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
-    t_end = time.time() + 60 * 15 # 900 s
+    t_end = time.time() + 60 * 20 # 1200 s
     i = 1
     while time.time() < t_end:
     # for i in range(1, NUM_THREAD+1):

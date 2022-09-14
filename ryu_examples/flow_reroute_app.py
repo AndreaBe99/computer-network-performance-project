@@ -105,6 +105,7 @@ def flow_reroute_app(app):
 
 		############# PLOT 4 #############
 		############ Revovery ############
+		# If hm is blocked we can restore the first path
 		if app.drop_hm_packet:
 			set_green_flow_rule(app, h1, h3, 10)
 
