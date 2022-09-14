@@ -108,6 +108,9 @@ def flow_reroute_app(app):
 		# If hm is blocked we can restore the first path
 		if app.drop_hm_packet:
 			set_green_flow_rule(app, h1, h3, 10)
+			print("#"*55)
+			print("Restored Default Path")
+			print("#"*55)
 
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
