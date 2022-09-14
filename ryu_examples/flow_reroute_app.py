@@ -100,18 +100,19 @@ def flow_reroute_app(app):
 		# discovers the attack and later reacts to it by redirecting the flow along p2.
 
 		# Comment the following line to if you don't want obtain a redicretion
-		read_rtt_h1(app, h1, h3, 2)
+		# read_rtt_h1(app, h1, h3, 2)
 
 
 		############# PLOT 4 #############
 		############ Revovery ############
 		# If hm is blocked we can restore the first path
+		"""
 		if app.drop_hm_packet:
 			set_green_flow_rule(app, h1, h3, 10)
 			print("#"*55)
 			print("Restored Default Path")
 			print("#"*55)
-
+		"""
 		# Delete all the flows from the first datapath found in the dictionary:
         #if len(app.dpids) > 0:
         #    first_entry = list(app.dpids.keys())[0]
