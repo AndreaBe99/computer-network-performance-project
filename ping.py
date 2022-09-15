@@ -16,7 +16,7 @@ LAST_PING = "last_ping.json"
 PING_LIST = "ping_list.json"
 
 ## PLOT 1
-MAX_NUM_PACKET = 50
+MAX_NUM_PACKET = 60
 ## PLOT 2
 NUM_THREAD = 1200 # One thread at sec for 15 minute == 1200
 
@@ -50,10 +50,10 @@ def ping_host(i):
 
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     # RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict, "Output":output.stdout}
-    RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict}
+    RESULT[sttime] = {"Timestamp":sttime, "Rtt": rtt_dict}
 
     with open(LAST_PING, "w") as file:
-        json.dump(RESULT[i], file)
+        json.dump(RESULT[sttime], file)
 
 
 if __name__ == "__main__":
@@ -86,4 +86,5 @@ if __name__ == "__main__":
     """
     with open(PING_LIST, "w") as file:
         json.dump(RESULT, file)
+    print(len(RESULT.keys()))
 
