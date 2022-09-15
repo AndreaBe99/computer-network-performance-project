@@ -167,7 +167,7 @@ class BaseSwitch(app_manager.RyuApp):
             
             ########## PLOT 4 ##########
             # Drop Packet from hm because is malicious
-            if self.drop_hm_packet and src_mac == hm:
+            if self.drop_hm_packet and src_mac == hm["mac"]:
                 print("Dropping packet from hm...")
                 return
             ############################
