@@ -16,7 +16,7 @@ LAST_PING = "last_ping.json"
 PING_LIST = "ping_list.json"
 
 ## PLOT 1
-MAX_NUM_PACKET = 60
+MAX_NUM_PACKET = 30
 ## PLOT 2
 NUM_THREAD = 1200 # One thread at sec for 15 minute == 1200
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     workers = []       
 
     for i in range(3, MAX_NUM_PACKET, 2):
-        end = time.time() + 1  # 10 sec * 10 iteration = 100 sec 
+        end = time.time() + 10  # 10 sec * 10 iteration = 100 sec 
         while time.time() < end:
             worker = Thread(target=ping_host, args=(i,))
             workers.append(worker)
@@ -86,5 +86,5 @@ if __name__ == "__main__":
     """
     with open(PING_LIST, "w") as file:
         json.dump(RESULT, file)
-    print(len(RESULT.keys()))
+
 
