@@ -91,7 +91,7 @@ def flow_reroute_app(app):
 		# between H1 and H3 as a consequence of the ongoing attack.
 
 		# Comment the following line to if you don't want obtain a delay
-		#set_malicious_flows(app, hm, h2)
+		set_malicious_flows(app, hm, h2)
 
 
 		############# PLOT 3 #############

@@ -16,15 +16,15 @@ LAST_PING = "last_ping.json"
 PING_LIST = "ping_list.json"
 
 ## PLOT 1
-MAX_NUM_PACKET = 30
+MAX_NUM_PACKET = 70
 ## PLOT 2
-NUM_THREAD = 1200 # One thread at sec for 15 minute == 1200
+MAX_NUM_PACKET = 1200 # One thread at sec for 15 minute == 1200
 
 # Dest IP
 IP_H3 = "10.0.0.3"
 
 # 15000 - 28 byte for header
-# SIZE = "14972" 
+#SIZE = "14972" 
 # 10000 - 28 byte for header
 SIZE = "9972" 
 
@@ -58,9 +58,10 @@ def ping_host(i):
 
 if __name__ == "__main__":
     workers = []       
-
-    for i in range(3, MAX_NUM_PACKET, 2):
-        end = time.time() + 10  # 10 sec * 10 iteration = 100 sec 
+    """
+    ########## For Plot 1 ##########
+    for i in range(1, MAX_NUM_PACKET, 2):
+        end = time.time() + 1  # 10 sec * 10 iteration = 100 sec 
         while time.time() < end:
             worker = Thread(target=ping_host, args=(i,))
             workers.append(worker)
@@ -69,21 +70,22 @@ if __name__ == "__main__":
             sleep(1/i)
         for w in workers:
             w.join()
-
+    ################################
     """
+    ########### For plot 2-3-4 ##########
     # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
-    # For plot 2-3-4: One thread at sec for 15 minute == 1200 threads
-    for i in range(1, NUM_THREAD+1):
+    # One thread at sec for 15 minute == 1200 threads
+    for i in range(1, MAX_NUM_PACKET+1):
         worker = Thread(target=ping_host, args=(i,))
         workers.append(worker)
         worker.setDaemon(True)
         worker.start()
-        sleep(1/i)    # PLOT 1
-        # sleep(1)        # PLOT 2
+        sleep(1)
         
     for w in workers:
         w.join()
-    """
+    #####################################
+    
     with open(PING_LIST, "w") as file:
         json.dump(RESULT, file)
 
