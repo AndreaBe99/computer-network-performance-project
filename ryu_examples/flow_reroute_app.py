@@ -155,8 +155,8 @@ def set_malicious_flows(app, hm, h2):
 	# To do this we use another python script to execute ping from hm
 
 def read_rtt_h1(app, h1, h3, priority):
-	global REDIRECT
 	"""
+	global REDIRECT
 	# We have already applied the flow route, we can exit
 	if REDIRECT > 2:
 		return
@@ -185,7 +185,7 @@ def read_rtt_h1(app, h1, h3, priority):
 		print("Time: ", ping["Timestamp"], " RTT: ", ping["Rtt"]["avg"])
 		print("#"*55)
 		if float(ping["Rtt"]["avg"]) > 1000:
-			REDIRECT += 1
+			# REDIRECT += 1
 			# Have the controller block the maliciuos traffic after the redirection 
 			# and dynamically re-establish the more convenient route along path p1. 
 			# Set the variable to drop packet from hm
