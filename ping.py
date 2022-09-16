@@ -47,7 +47,6 @@ def ping_host(i):
         rtt_dict["mdev"] = -1
 
     sttime = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    # RESULT[i] = {"Timestamp":sttime, "Rtt": rtt_dict, "Output":output.stdout}
     RESULT[sttime] = {"Timestamp":sttime, "Rtt": rtt_dict}
 
     with open(LAST_PING, "w") as file:

@@ -153,27 +153,6 @@ def set_malicious_flows(app, hm, h2):
 	# To do this we use another python script to execute ping from hm
 
 def read_rtt_h1(app, h1, h3, priority):
-	"""
-	global REDIRECT
-	# We have already applied the flow route, we can exit
-	if REDIRECT > 2:
-		return
-
-	# If we have 2 delay we apply the new flow route
-	if REDIRECT > 1:
-		# Have the controller block the maliciuos traffic after the redirection 
-		# and dynamically re-establish the more convenient route along path p1. 
-		# Set the variable to drop packet from hm
-		app.drop_hm_packet = True		# Comment this line to avoid to block hm
-
-		# Set new path rule
-		path = [h1["mac"], (1,3), (5,2), (3,3), h3["mac"]]
-		app.inst_path_rule(path, priority)
-		print("#"*55)
-		print("Attack Detection: path redirection on H1->S1->S5->S3->H3")
-		print("#"*55)
-	"""
-
 	# We check the RTT from the file
 	if os.path.exists(LAST_PING):
 		with open(LAST_PING, "r") as file:

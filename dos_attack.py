@@ -23,12 +23,6 @@ def ping_host(i):
         subprocess.run(["ping", "-s", str(i), "-i", str(100/i),IP_H2])
 
 if __name__ == "__main__":
-    # Flood Ping
-
-    # Ping of Death
-    # subprocess.run(["hping3", "-S", "--flood", "-V", "-p", "6633", IP_H2])
-    #subprocess.run(["hping3", "-c", "10000", "-S", "--flood", "--rand-source", "-V", IP_H2])
-    
     workers = []
     # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
     for i in range(1,NUM_THREAD+1):
@@ -38,7 +32,6 @@ if __name__ == "__main__":
         worker.start()
         # Increase frequency for each ping
         sleep(1/i)
-        #sleep(1)
     
     for w in workers:
         w.join()
