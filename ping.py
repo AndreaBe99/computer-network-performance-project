@@ -17,16 +17,14 @@ PING_LIST = "ping_list.json"
 
 ## PLOT 1
 MAX_NUM_PACKET = 70
-## PLOT 2
-MAX_NUM_PACKET = 1200 # One thread at sec for 15 minute == 1200
 
 # Dest IP
 IP_H3 = "10.0.0.3"
 
 # 15000 - 28 byte for header
-#SIZE = "14972" 
+SIZE = "14972" 
 # 10000 - 28 byte for header
-SIZE = "9972" 
+#SIZE = "9972" 
 
 RESULT = {}
 
@@ -75,12 +73,16 @@ if __name__ == "__main__":
     ########### For plot 2-3-4 ##########
     # The DoS Attack have to start after 10 minute so we want to perfrom a 15 minute test
     # One thread at sec for 15 minute == 1200 threads
-    for i in range(1, MAX_NUM_PACKET+1):
+    end = time.time() + 60 * 15  # 15 minutes 
+    i = 0
+    while time.time() < end:
+    # for i in range(1, MAX_NUM_PACKET+1):
         worker = Thread(target=ping_host, args=(i,))
         workers.append(worker)
         worker.setDaemon(True)
         worker.start()
         sleep(1)
+        i += 1
         
     for w in workers:
         w.join()
